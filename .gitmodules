@@ -1,0 +1,4 @@
+[submodule "subprojects/YNOGK-CXX"]
+	path = subprojects/YNOGK-CXX
+	url = ../YNOGK-CXX.git
+	branch = main
