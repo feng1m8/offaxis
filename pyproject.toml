@@ -1,0 +1,31 @@
+[build-system]
+build-backend = "scikit_build_core.build"
+requires = [
+    "scikit-build-core",
+    "cython-cmake",
+    "cython",
+]
+
+[tool.scikit-build]
+cmake.args = ["-GNinja"]
+ninja.make-fallback = false
+wheel.py-api = "cp37"
+wheel.license-files = ["LICENSE", "src/relxill/LICENSE", "subprojects/YNOGK-CXX/LICENSE", "subprojects/YNOGK-CXX/YNOGK/LICENSE"]
+
+[tool.meson-python]
+args.install = ['--tags=runtime']
+limited-api = true
+
+[project]
+name = "offaxis"
+version = "1.0.1"
+requires-python = ">=3.7"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Programming Language :: C++",
+  "Programming Language :: C",
+  "Programming Language :: Cython",
+  "Topic :: Scientific/Engineering :: Astronomy",
+]
