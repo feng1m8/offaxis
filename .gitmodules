@@ -2,3 +2,7 @@
 	path = subprojects/YNOGK-CXX
 	url = ../YNOGK-CXX.git
 	branch = main
+[submodule "src/relxill"]
+	path = src/relxill
+	url = ../relxill.git
+	branch = main
