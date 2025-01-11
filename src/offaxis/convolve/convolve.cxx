@@ -4,6 +4,7 @@
 #include "convolve.hxx"
 
 void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
+specCache *new_specCache(int n_cache, int *status);
 
 namespace offaxis::relxill
 {
@@ -15,7 +16,7 @@ namespace offaxis::relxill
         rebin_spectrum(std::begin(envs::energy_conv), fxill, N_ENER_CONV, ener0, std::begin(flu0), flu0.size());
 
         double fout[N_ENER_CONV];
-        std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(), free_specCache);
+        std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(1, nullptr), free_specCache);
         convolveSpectrumFFTNormalized(const_cast<double *>(std::begin(envs::energy_conv)), fxill, std::begin(frel), fout, N_ENER_CONV, 1, 1, 0, spec_cache.get(), &status);
 
         flu0.resize(ener.size() - 1);
