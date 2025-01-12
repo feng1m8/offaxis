@@ -31,7 +31,7 @@ namespace offaxis
         Ray ray(parameter[a_spin], parameter[rlp], coslp, sinlp, vlp, parameter[Rin], parameter[Rout]);
 
 #pragma omp parallel for firstprivate(ray)
-        for (std::size_t pix = 0; pix < sphere.npix; ++pix)
+        for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
             auto [pr, ptheta, pphi] = sphere[pix];
             double glp = ray(pr, ptheta, pphi);
@@ -44,7 +44,7 @@ namespace offaxis
             }
         }
 
-        return histogram->get() / sphere.npix;
+        return histogram->get() / sphere.size;
     }
 
     void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)

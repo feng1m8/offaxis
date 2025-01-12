@@ -51,7 +51,7 @@ namespace offaxis::offaxxillver
         std::size_t to_inf = 0;
 
 #pragma omp parallel for firstprivate(ptcl) reduction(+ : to_inf)
-        for (std::size_t pix = 0; pix < sphere.npix; ++pix)
+        for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
             auto [pr, ptheta, pphi] = sphere[pix];
             ptcl.lambdaq(pr, ptheta, pphi);
@@ -60,7 +60,7 @@ namespace offaxis::offaxxillver
                 ++to_inf;
         }
 
-        return static_cast<double>(to_inf) / static_cast<double>(sphere.npix);
+        return static_cast<double>(to_inf) / static_cast<double>(sphere.size);
     }
 
     std::valarray<double> primary(const std::valarray<double> &energy, const std::valarray<double> &parameter, T_PrimSpec prim_type)

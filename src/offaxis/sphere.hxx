@@ -2,6 +2,7 @@
 #define OFFAXIS_SPHERE_HXX
 
 #include <array>
+#include <functional>
 #include <map>
 #include <vector>
 
@@ -10,15 +11,15 @@ namespace offaxis
     class Sphere
     {
     public:
+        const std::size_t size;
+
         Sphere(int nside);
 
-        std::array<double, 3> operator[](std::size_t pix) const
+        std::array<std::reference_wrapper<const double>, 3> operator[](std::size_t pix) const
         {
             auto vec = this->data.cbegin() + 3 * pix;
             return {vec[0], vec[1], vec[2]};
         }
-
-        const std::size_t npix;
 
     private:
         std::vector<double> data;

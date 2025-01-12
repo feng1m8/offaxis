@@ -25,7 +25,7 @@ namespace offaxis
 
             const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
-            const auto emission(std::make_unique<Emission>(sphere.npix));
+            const auto emission(std::make_unique<Emission>(sphere.size));
 
             double theta2rad = utils::deg2rad(parameter[thetalp]);
             double coslp = std::cos(theta2rad);
@@ -39,7 +39,7 @@ namespace offaxis
             std::size_t to_inf = 0;
 
 #pragma omp parallel for firstprivate(ray) reduction(+ : to_disk, to_inf)
-            for (std::size_t pix = 0; pix < sphere.npix; ++pix)
+            for (std::size_t pix = 0; pix < sphere.size; ++pix)
             {
                 auto [pr, ptheta, pphi] = sphere[pix];
                 double glp = ray(pr, ptheta, pphi);
