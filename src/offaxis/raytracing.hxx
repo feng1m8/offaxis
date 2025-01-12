@@ -5,17 +5,22 @@
 
 namespace offaxis
 {
+    double redshift(double radius, double a_spin, double lamda);
+
     class Ray
     {
     public:
-        Ray(double a_spin, double rlp, double coslp, double sinlp, double *vlp, double Rin, double Rout) : ptcl(a_spin, rlp, coslp, sinlp, 1.0, vlp)
+        enum Tracing
         {
-            this->Rin = Rin;
-            this->Rout = Rout;
-            this->ptcl.metric();
-        }
+            Disk,
+            InfinityOrBlackHole,
+        };
 
-        double operator()(double pr, double ptheta, double pphi);
+        Ray(double radius, double theta2rad, double phi2rad, const double *velo, double a_spin, double Rin, double Rout);
+
+        Tracing tracing(double pr, double ptheta, double pphi);
+
+        double redshift();
 
         auto operator->()
         {
@@ -23,12 +28,11 @@ namespace offaxis
         }
 
     private:
+        double phi2rad;
         double Rin;
         double Rout;
         ynogk::Particle ptcl;
     };
-
-    double redshift(double radius, double a_spin, double lamda);
 }
 
 #endif

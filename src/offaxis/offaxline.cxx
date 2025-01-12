@@ -22,23 +22,17 @@ namespace offaxis
 
         const Histogram histogram(energy);
 
-        double theta2rad = utils::deg2rad(parameter[thetalp]);
-        double coslp = std::cos(theta2rad);
-        double sinlp = std::sin(theta2rad);
-        double vlp[3] = {parameter[vr], parameter[vtheta], parameter[vphi]};
-        double phi2rad = utils::deg2rad(parameter[philp]);
-
-        Ray ray(parameter[a_spin], parameter[rlp], coslp, sinlp, vlp, parameter[Rin], parameter[Rout]);
+        Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
 
 #pragma omp parallel for firstprivate(ray)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
             auto [pr, ptheta, pphi] = sphere[pix];
-            double glp = ray(pr, ptheta, pphi);
 
-            if (glp > 0.0)
+            if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
             {
-                auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi + phi2rad);
+                double glp = ray.redshift();
+                auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi);
                 double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], ray->lambda) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
