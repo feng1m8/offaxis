@@ -18,13 +18,14 @@ namespace offaxis
         {
             return M_PI / 180.0 * degree;
         }
+
+        std::filesystem::path abspath();
     }
 
     namespace envs
     {
         int nthreads();
         int nside();
-        std::filesystem::path libpath();
         std::string kydir();
     }
 }

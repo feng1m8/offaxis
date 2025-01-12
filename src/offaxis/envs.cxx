@@ -3,6 +3,21 @@
 
 #include <dlfcn.h>
 
+namespace offaxis
+{
+    namespace utils
+    {
+        std::filesystem::path abspath()
+        {
+            Dl_info dli;
+            if (dladdr(reinterpret_cast<void *>(abspath), &dli) == 0)
+                return std::filesystem::current_path() / ".";
+            else
+                return std::filesystem::absolute(dli.dli_fname);
+        }
+    }
+}
+
 namespace offaxis::envs
 {
     int nthreads()
@@ -21,15 +36,6 @@ namespace offaxis::envs
             return 64;
         else
             return std::atoi(env);
-    }
-
-    std::filesystem::path libpath()
-    {
-        Dl_info dli;
-        if (dladdr((void *)libpath, &dli) == 0)
-            return std::filesystem::current_path();
-        else
-            return std::filesystem::path(dli.dli_fname).remove_filename();
     }
 
     std::string kydir()
@@ -68,7 +74,7 @@ namespace offaxis::envs
         if (std::filesystem::exists(fp))
             return fp.string();
 
-        fp = envs::libpath() / "KBHtables80.fits";
+        fp = utils::abspath().replace_filename("KBHtables80.fits");
         if (std::filesystem::exists(fp))
             return fp.string();
 

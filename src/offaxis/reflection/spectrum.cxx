@@ -110,7 +110,7 @@ namespace offaxis::relxill
             return fullfilename;
         }
 
-        fp = envs::libpath() / filename;
+        fp = utils::abspath().replace_filename(filename);
         if (std::filesystem::exists(fp))
         {
             char *fullfilename = new char[1 + fp.string().size()]{'\0'};
