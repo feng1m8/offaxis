@@ -20,7 +20,7 @@ namespace offaxis
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
-        const auto histogram(std::make_unique<const Histogram>(energy));
+        const Histogram histogram(energy);
 
         double theta2rad = utils::deg2rad(parameter[thetalp]);
         double coslp = std::cos(theta2rad);
@@ -40,11 +40,11 @@ namespace offaxis
             {
                 auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi + phi2rad);
                 double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], ray->lambda) * cosem * lensing;
-                histogram->accumulate(gobs, iobs);
+                histogram.accumulate(gobs, iobs);
             }
         }
 
-        return histogram->get() / sphere.size;
+        return histogram.get() / sphere.size;
     }
 
     void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
