@@ -17,7 +17,7 @@ namespace offaxis::relxill
 
         double fout[N_ENER_CONV];
         std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(1, nullptr), free_specCache);
-        convolveSpectrumFFTNormalized(const_cast<double *>(std::begin(envs::energy_conv)), fxill, std::begin(frel), fout, N_ENER_CONV, 1, 1, 0, spec_cache.get(), &status);
+        convolveSpectrumFFTNormalized(std::begin(envs::energy_conv), fxill, std::begin(frel), fout, N_ENER_CONV, 1, 1, 0, spec_cache.get(), &status);
 
         flu0.resize(ener.size() - 1);
         rebin_spectrum(std::begin(ener), std::begin(flu0), flu0.size(), std::begin(envs::energy_conv), fout, N_ENER_CONV);

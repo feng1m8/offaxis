@@ -37,7 +37,7 @@ namespace offaxis::relxill
     {
         int status = EXIT_SUCCESS;
 
-        std::unique_ptr<xillSpec, std::function<void(xillSpec *)>> xill_spec(get_xillver_spectra_table(const_cast<xillTableParam *>(&this->param), &status), free_xill_spec);
+        std::unique_ptr<xillSpec, std::function<void(xillSpec *)>> xill_spec(get_xillver_spectra_table(&this->param, &status), free_xill_spec);
         std::valarray<double> xill_flux(xill_spec->n_ener);
         calc_xillver_angdep(std::begin(xill_flux), xill_spec.get(), std::begin(dist), &status);
 
