@@ -139,6 +139,7 @@ offaxis = static_library(
     'src/offaxis/reflection/offaxxill.cxx',
     'src/offaxis/reflection/primary.cxx',
     'src/offaxis/reflection/reflection.cxx',
+    'src/offaxis/reflection/initialize.cxx',
     'src/offaxis/xspecmodel/xspecmodel.cxx',
     include_directories: [
         'src',
