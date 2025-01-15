@@ -62,7 +62,7 @@ namespace offaxis
 
         flux = offaxline(engs, param, envs::nside());
 
-        if (parameter[normtype] != -1)
+        if (parameter[normtype] != -1.0)
             flux /= flux.sum();
     }
 }

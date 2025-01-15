@@ -24,12 +24,11 @@ offaxis is a set of relativistic X-ray reflection models that allows non-axisymm
 - cfitsio
 - fftw3
 
-### Get Source code
+### Get source code
 ``` bash
-git clone https://git.ustc.edu.cn/fengyuan01/offaxis.git
-# or git clone https://github.com/feng1m8/offaxis.git
+git clone https://github.com/feng1m8/offaxis.git
 cd offaxis
-git submodule update --init
+git submodule update --init --recursive
 ```
 
 ### Python module

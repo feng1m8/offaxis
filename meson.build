@@ -27,31 +27,6 @@ headas = include_directories(headas + '/include')
 cxx = meson.get_compiler('cpp')
 cxx.has_header('xsTypes.h', include_directories: headas, required: true)
 
-# compile_args = [
-#     '-ffast-math',
-#     '-march=native',
-#     '-mtune=native',
-# ]
-
-# link_args = [
-#     '-ffast-math',
-# ]
-
-# add_global_arguments(
-#     meson.get_compiler('c').get_supported_arguments(compile_args),
-#     language: 'c',
-# )
-
-# add_global_arguments(
-#     cxx.get_supported_arguments(compile_args),
-#     language: 'cpp',
-# )
-
-# add_global_link_arguments(
-#     cxx.get_supported_link_arguments(link_args),
-#     language: 'cpp',
-# )
-
 ynogk_cxx = subproject('YNOGK-CXX').get_variable('ynogk_cxx')
 
 fftw3 = dependency('fftw3')
