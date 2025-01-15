@@ -7,7 +7,6 @@
 
 #include "cache.hxx"
 #include "offaxis/envs.hxx"
-#include "reflection.hxx"
 #include "spectrum.hxx"
 #include "offaxis/sphere.hxx"
 

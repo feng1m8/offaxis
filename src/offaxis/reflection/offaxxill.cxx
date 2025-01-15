@@ -9,15 +9,16 @@
 #include "offaxis/envs.hxx"
 #include "offaxis/kyn.hxx"
 #include "offaxis/raytracing.hxx"
-#include "reflection.hxx"
 #include "spectrum.hxx"
 #include "offaxis/sphere.hxx"
 
+#include "emission.hxx"
 namespace offaxis
 {
     namespace offaxxillver
     {
         Reflection offaxis(const std::vector<double> &parameter, int nside, int n_incl)
+        static Emission offaxis(const std::vector<double> &param, int nside, int n_incl)
         {
             using namespace parameter::offaxconv;
 
@@ -25,37 +26,33 @@ namespace offaxis
 
             const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
-            const auto emission(std::make_unique<Emission>(sphere.size));
+            Histogram histogram(n_incl, sphere.size);
 
             Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
 
-            std::size_t to_disk = 0;
-            std::size_t to_inf = 0;
-
-#pragma omp parallel for firstprivate(ray) reduction(+ : to_disk, to_inf)
+#pragma omp declare reduction(+ : Histogram : omp_out += omp_in) initializer(omp_priv = omp_orig)
+#pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
             for (std::size_t pix = 0; pix < sphere.size; ++pix)
             {
                 auto [pr, ptheta, pphi] = sphere[pix];
 
                 if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
                 {
-                    ++to_disk;
+                    ++histogram.to_disk;
                     auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi);
 
                     if (gobs >= EMIN_RELXILL_CONV and gobs < EMAX_RELXILL_CONV)
                     {
                         double glp = ray.redshift();
                         double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], ray->lambda) * cosem * lensing;
-                        emission->at(pix) = {glp, gobs, cosem, iobs};
+                        histogram.accumulate(gobs, iobs, cosem, glp);
                     }
                 }
                 else if (ray->radius > 1000.0)
-                    ++to_inf;
+                    ++histogram.to_infinity;
             }
 
-            double f_refl = static_cast<double>(to_inf) / static_cast<double>(to_disk);
-
-            return emission->get(f_refl, n_incl);
+            return histogram.get();
         }
 
         static auto reflection(const std::valarray<double> &energy, const std::valarray<double> &parameter, T_PrimSpec prim_type)
@@ -69,7 +66,7 @@ namespace offaxis
             // param[offaxconv::normtype] = -1.0;
 
             static Cache corona(offaxis, 2);
-            const auto reflection(std::make_unique<const Reflection>(corona(param, envs::nside(), relxill::n_incl(prim_type))));
+            const auto reflection(std::make_unique<const Emission>(corona(param, envs::nside(), relxill::n_incl(prim_type))));
 
             const auto xillver(std::make_unique<const relxill::Spectrum>(parameter, prim_type));
 

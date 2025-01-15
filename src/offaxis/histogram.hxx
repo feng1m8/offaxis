@@ -19,6 +19,11 @@ namespace offaxis
             gsl_histogram_set_ranges(this->hist, std::begin(range), range.size());
         }
 
+        Histogram(const Histogram &other)
+        {
+            this->hist = gsl_histogram_clone(other.hist);
+        }
+
         ~Histogram()
         {
             gsl_histogram_free(this->hist);
@@ -32,6 +37,11 @@ namespace offaxis
         std::valarray<double> get() const
         {
             return std::valarray<double>(this->hist->bin, this->hist->n);
+        }
+
+        void operator+=(const Histogram &rhs)
+        {
+            gsl_histogram_add(this->hist, rhs.hist);
         }
     };
 }

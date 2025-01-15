@@ -39,8 +39,8 @@ add_library(
     "src/offaxis/reflection/spectrum.cxx"
     "src/offaxis/reflection/offaxxill.cxx"
     "src/offaxis/reflection/primary.cxx"
-    "src/offaxis/reflection/reflection.cxx"
     "src/offaxis/reflection/initialize.cxx"
+    "src/offaxis/reflection/emission.cxx"
     "src/offaxis/xspecmodel/xspecmodel.cxx"
 )
 

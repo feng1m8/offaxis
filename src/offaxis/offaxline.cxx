@@ -20,11 +20,12 @@ namespace offaxis
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
-        const Histogram histogram(energy);
+        Histogram histogram(energy);
 
         Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
 
-#pragma omp parallel for firstprivate(ray)
+#pragma omp declare reduction(+ : Histogram : omp_out += omp_in) initializer(omp_priv = omp_orig)
+#pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
             auto [pr, ptheta, pphi] = sphere[pix];
