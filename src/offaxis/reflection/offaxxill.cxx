@@ -12,8 +12,8 @@
 
 #include "cache.hxx"
 #include "emission.hxx"
-#include "spectrum.hxx"
 #include "primary.hxx"
+#include "spectrum.hxx"
 
 namespace offaxis
 {
@@ -65,7 +65,7 @@ namespace offaxis
             if (parameter[offaxxillCp::Rin] < 0.0)
                 param[offaxconv::Rin] = -parameter[offaxxillCp::Rin] * rms(parameter[offaxxillCp::a_spin]);
 
-            static Cache corona(offaxis, 2);
+            static Cache corona(offaxis, envs::cache_size());
             const Emission emission(corona(param, envs::nside(), relxill::n_incl(prim_type)));
 
             const relxill::Spectrum spectrum(parameter, prim_type);

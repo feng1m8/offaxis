@@ -4,6 +4,18 @@
 
 namespace offaxis
 {
+    namespace envs
+    {
+        inline int cache_size()
+        {
+            auto env = std::getenv("OFFAXIS_CACHE_SIZE");
+            if (env == nullptr)
+                return 0;
+            else
+                return std::atoi(env);
+        }
+    }
+
     template <typename T, typename... Args>
     class Cache
     {
@@ -17,10 +29,17 @@ namespace offaxis
 
         T operator()(Args... args)
         {
+            if (this->size == 0)
+                return func(args...);
+
             auto temp = std::tie(args...);
 
-            auto i = std::find_if(this->data.cbegin(), this->data.cend(), [&](auto &i)
-                                  { return i.first == temp; });
+            auto i = std::find_if(
+                this->data.cbegin(), this->data.cend(),
+                [&](auto &i)
+                {
+                    return i.first == temp;
+                });
 
             if (i == this->data.cend())
             {

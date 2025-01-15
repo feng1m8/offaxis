@@ -74,7 +74,7 @@ namespace offaxis::offaxxillver
 
         const relxill::Spectrum spectrum(parameter, prim_type);
 
-        static Cache to_inf(to_infinity, 2);
+        static Cache to_inf(to_infinity, envs::cache_size());
 
         double f_prim = to_inf(parameter[a_spin], parameter[rlp], parameter[thetalp], envs::nside() / 2);
         double beaming = dinf * dinf * std::pow(ginf, parameter[gamma]);
