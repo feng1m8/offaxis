@@ -33,7 +33,7 @@ namespace offaxis::relxill
 
         double norm;
 
-        std::valarray<double> nthcomp(const std::valarray<double> &ener, double ener_shift_source_obs) const;
+        std::valarray<double> primary(const std::valarray<double> &ener, double ener_shift_source_obs) const;
 
     private:
         xillTableParam parameter;

@@ -61,7 +61,7 @@ namespace offaxis::relxill
         return xill_spec.flux;
     }
 
-    std::valarray<double> Spectrum::nthcomp(const std::valarray<double> &ener, double ener_shift_source_obs) const
+    std::valarray<double> Spectrum::primary(const std::valarray<double> &ener, double ener_shift_source_obs) const
     {
         static const std::valarray<double> energy_norm(utils::geomspace(EMIN_XILLVER_NORMALIZATION, EMAX_XILLVER_NORMALIZATION, N_ENER_COARSE + 1));
 

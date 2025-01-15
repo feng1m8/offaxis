@@ -1,18 +1,17 @@
-#include <memory>
-
 #include <omp.h>
 
 #include "offaxis/parameter.hxx"
 #include "ynogk_cxx/particle.hxx"
 
-#include "cache.hxx"
 #include "offaxis/envs.hxx"
-#include "spectrum.hxx"
 #include "offaxis/sphere.hxx"
+
+#include "cache.hxx"
+#include "spectrum.hxx"
 
 namespace offaxis::offaxxillver
 {
-    double doppler(double coslp, double sinlp, double philp, double *vlp, double incl)
+    double doppler(double coslp, double sinlp, double philp, const double *vlp, double incl)
     {
         double phi2rad = utils::deg2rad(philp);
         double sinphi = std::sin(phi2rad);
@@ -69,18 +68,17 @@ namespace offaxis::offaxxillver
         double theta2rad = utils::deg2rad(parameter[thetalp]);
         double coslp = std::cos(theta2rad);
         double sinlp = std::sin(theta2rad);
-        double vlp[3] = {parameter[vr], parameter[vtheta], parameter[vphi]};
 
-        double dinf = doppler(coslp, sinlp, parameter[philp], vlp, parameter[Incl]);
+        double dinf = doppler(coslp, sinlp, parameter[philp], &parameter[vr], parameter[Incl]);
         double ginf = dinf * redshiftinf(parameter[rlp], coslp, sinlp, parameter[a_spin]);
 
-        const auto xillver(std::make_unique<const relxill::Spectrum>(parameter, prim_type));
+        const relxill::Spectrum spectrum(parameter, prim_type);
 
         static Cache to_inf(to_infinity, 2);
 
         double f_prim = to_inf(parameter[a_spin], parameter[rlp], parameter[thetalp], envs::nside() / 2);
         double beaming = dinf * dinf * std::pow(ginf, parameter[gamma]);
 
-        return f_prim * beaming * xillver->nthcomp(energy, ginf);
+        return f_prim * beaming * spectrum.primary(energy, ginf);
     }
 }
