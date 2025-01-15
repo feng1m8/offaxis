@@ -126,7 +126,7 @@ relxill = declare_dependency(
     ],
 )
 
-offaxis = static_library(
+offaxis = shared_library(
     'offaxis',
     'src/offaxis/envs.cxx',
     'src/offaxis/kyn.cxx',
@@ -138,8 +138,8 @@ offaxis = static_library(
     'src/offaxis/reflection/spectrum.cxx',
     'src/offaxis/reflection/offaxxill.cxx',
     'src/offaxis/reflection/primary.cxx',
-    'src/offaxis/reflection/reflection.cxx',
     'src/offaxis/reflection/initialize.cxx',
+    'src/offaxis/reflection/emission.cxx',
     'src/offaxis/xspecmodel/xspecmodel.cxx',
     include_directories: [
         'src',
@@ -159,17 +159,8 @@ offaxis = static_library(
 )
 
 offaxis = declare_dependency(
-    objects: [
-        offaxis.extract_all_objects(recursive: true),
-    ],
-    dependencies: [
-        fftw3,
-        ccfits,
-        gsl,
-        chealpix,
-        libdl,
-        openmp,
-        cfitsio,
+    link_with: [
+        offaxis,
     ],
     include_directories: [
         'include',

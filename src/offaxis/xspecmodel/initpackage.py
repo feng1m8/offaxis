@@ -1,32 +1,41 @@
-import argparse
-import errno
 import os
-from pathlib import Path
+import errno
 import shutil
+import argparse
+from pathlib import Path
 
 
-def initpackage(builddir):
+PREFIX = Path(__file__).parent
+
+
+def initpackage(builddir, force):
     builddir = Path(builddir)
     builddir.mkdir(parents=True, exist_ok=True)
 
-    for i in builddir.iterdir():
-        raise OSError(errno.ENOTEMPTY, 'Directory not empty', str(builddir))
+    if force:
+        for i in builddir.iterdir():
+            if i.is_file():
+                i.unlink()
+            elif i.is_dir():
+                shutil.rmtree(i)
+    elif len(list(builddir.iterdir())) > 0:
+        raise OSError(errno.ENOTEMPTY, "Directory not empty", str(builddir))
 
-    shutil.copyfile(Path(__file__).with_name('offaxis.dat'), builddir / 'offaxis.dat')
-    shutil.copyfile(Path(__file__).with_name('liboffaxis.a'), builddir / 'liboffaxis.a')
+    shutil.copy(PREFIX / "offaxis.dat", builddir)
 
     cwd = Path.cwd()
     os.chdir(builddir)
 
-    os.system('initpackage offaxis offaxis.dat .')
-    os.system('hmake HD_LFLAGS+="liboffaxis.a -lchealpix -fopenmp"')
+    os.system("initpackage offaxis offaxis.dat .")
+    os.system(f'hmake HD_LFLAGS+="{PREFIX / "liboffaxis.so"} -Wl,-rpath,{PREFIX}"')
 
     os.chdir(cwd)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('builddir')
+    parser.add_argument("builddir")
+    parser.add_argument("-f", "--force", action="store_true")
     args = parser.parse_args()
 
-    initpackage(args.builddir)
+    initpackage(args.builddir, args.force)

@@ -28,7 +28,7 @@ pkg_check_modules(CCfits REQUIRED IMPORTED_TARGET CCfits)
 pkg_check_modules(chealpix REQUIRED IMPORTED_TARGET chealpix)
 
 add_library(
-    "liboffaxis" OBJECT
+    "liboffaxis" SHARED
     "src/offaxis/envs.cxx"
     "src/offaxis/kyn.cxx"
     "src/offaxis/offaxline.cxx"
@@ -50,11 +50,12 @@ target_include_directories(
     PUBLIC "include"
 )
 
+set_target_properties("liboffaxis" PROPERTIES OUTPUT_NAME "offaxis")
 target_compile_options("liboffaxis" PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_options("liboffaxis" INTERFACE ${OpenMP_CXX_FLAGS})
+target_link_options("liboffaxis" PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(
     "liboffaxis"
-    PUBLIC ${DL} Relxill ynogk_cxx GSL::gsl PkgConfig::chealpix PkgConfig::CCfits
+    PRIVATE ${DL} Relxill ynogk_cxx GSL::gsl PkgConfig::chealpix PkgConfig::CCfits
     INTERFACE $<TARGET_OBJECTS:ynogk_cxx>
 )
 
@@ -75,14 +76,21 @@ cython_transpile(
 
 Python_add_library(
     "offaxis" MODULE
-    USE_SABI 3.7
+    USE_SABI 3.7 WITH_SOABI
     ${offaxis_pyx}
 )
 
+set_target_properties("offaxis" PROPERTIES INSTALL_RPATH "$ORIGIN")
 target_link_libraries("offaxis" PRIVATE "liboffaxis")
 target_compile_definitions(
     "offaxis"
     PRIVATE "-DCYTHON_LIMITED_API"
+)
+
+install(
+    TARGETS "liboffaxis"
+    RUNTIME DESTINATION "offaxis"
+    LIBRARY DESTINATION "offaxis"
 )
 
 install(

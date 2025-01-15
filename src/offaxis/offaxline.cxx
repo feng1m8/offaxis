@@ -42,7 +42,7 @@ namespace offaxis
         return histogram.get() / sphere.size;
     }
 
-    void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
+    [[gnu::dllexport]] void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter::offaxline;
 

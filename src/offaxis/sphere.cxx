@@ -10,7 +10,7 @@ namespace offaxis
     {
         this->data.reserve(3 * this->size);
 
-        for (std::int64_t pix = 0; pix < this->size; ++pix)
+        for (std::int64_t pix = 0; pix < static_cast<std::int64_t>(this->size); ++pix)
         {
             double vec[3];
             pix2vec_ring64(nside, pix, vec);

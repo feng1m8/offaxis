@@ -109,12 +109,12 @@ namespace offaxis
         }
     }
 
-    void offaxxillCp(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
+    [[gnu::dllexport]] void offaxxillCp(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         offaxxillver::offaxxillver<T_PrimSpec::Nthcomp>(energy, parameter, flux);
     }
 
-    void offaxxill(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
+    [[gnu::dllexport]] void offaxxill(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter;
 

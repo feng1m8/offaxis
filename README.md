@@ -50,7 +50,7 @@ offaxis is a set of relativistic X-ray reflection models that allows non-axisymm
 
 3. Additional step required to use it in XSPEC.
 
-       python -m offaxline.initpackage /path/to/build/
+       python -m offaxline.initpackage /path/to/build/ --force
 
     Then it will be available with XSPEC.
 
