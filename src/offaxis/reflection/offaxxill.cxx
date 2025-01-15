@@ -68,20 +68,18 @@ namespace offaxis
             static Cache corona(offaxis, 2);
             const auto reflection(std::make_unique<const Emission>(corona(param, envs::nside(), relxill::n_incl(prim_type))));
 
-            const auto xillver(std::make_unique<const relxill::Spectrum>(parameter, prim_type));
+            const relxill::Spectrum spectrum(parameter, prim_type);
 
             std::valarray<double> flux(energy.size() - 1);
-
-            for (std::size_t i = 0; i < reflection->glp.size(); ++i)
+            for (std::size_t i = 0; i < emission->glp.size(); ++i)
             {
-                xillver->ect = parameter[offaxxillCp::Ecut] * reflection->glp[i];
+                relxill::Spectrum spec = spectrum * emission->glp[i];
+                relxill::Spectrum::Spec xillver(spec.xillver(energy, emission->dist[i]));
 
-                double norm = xillver->norm(reflection->glp[i]);
-
-                flux += norm * xillver->angdep(energy, reflection->hist[i], reflection->dist[i]);
+                flux += spec.norm * spec.convolve(xillver, energy, emission->hist[i]);
             }
 
-            return std::make_tuple(flux, reflection->f_refl);
+            return std::make_tuple(flux, emission->f_refl);
         }
 
         static std::valarray<double> offaxxillver(const std::valarray<double> &energy, const std::valarray<double> &parameter, T_PrimSpec prim_type)

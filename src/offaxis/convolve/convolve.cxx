@@ -8,12 +8,12 @@ specCache *new_specCache(int n_cache, int *status);
 
 namespace offaxis::relxill
 {
-    void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, const double *ener0, std::valarray<double> &flu0)
+    void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0)
     {
         int status = EXIT_SUCCESS;
 
         double fxill[N_ENER_CONV];
-        rebin_spectrum(std::begin(envs::energy_conv), fxill, N_ENER_CONV, ener0, std::begin(flu0), flu0.size());
+        rebin_spectrum(std::begin(envs::energy_conv), fxill, N_ENER_CONV, std::begin(ener0), std::begin(flu0), flu0.size());
 
         double fout[N_ENER_CONV];
         std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(1, nullptr), free_specCache);
@@ -25,7 +25,7 @@ namespace offaxis::relxill
 
     void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, std::valarray<double> &flu0)
     {
-        convolveSpectrumFFTNormalized(ener, frel, std::begin(ener), flu0);
+        convolveSpectrumFFTNormalized(ener, frel, ener, flu0);
         set_flux_outside_defined_range_to_zero(std::begin(ener), std::begin(flu0), flu0.size(), RELCONV_EMIN, RELCONV_EMAX);
     }
 }

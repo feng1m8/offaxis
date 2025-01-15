@@ -17,18 +17,26 @@ namespace offaxis::relxill
     class Spectrum
     {
     public:
+        struct Spec
+        {
+            std::valarray<double> energy;
+            std::valarray<double> flux;
+        };
+
         Spectrum(const std::valarray<double> &parameter, T_PrimSpec prim_type);
 
-        double norm(double ener_shift_observer_source) const;
+        Spectrum operator*(double ener_shift_observer_source) const;
 
-        std::valarray<double> angdep(const std::valarray<double> &energy, const std::valarray<double> &hist, const std::valarray<double> &dist) const;
+        Spec xillver(const std::valarray<double> &energy, const std::valarray<double> &dist) const;
+
+        std::valarray<double> convolve(Spec& xill_spec,const std::valarray<double> &energy, const std::valarray<double> &hist) const;
+
+        double norm;
 
         std::valarray<double> nthcomp(const std::valarray<double> &ener, double ener_shift_source_obs) const;
 
-        double &ect;
-
     private:
-        xillTableParam param;
+        xillTableParam parameter;
     };
 }
 
