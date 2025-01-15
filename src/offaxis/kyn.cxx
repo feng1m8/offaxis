@@ -35,22 +35,24 @@ namespace offaxis
         fits->extension(4).column(1).read(this->r_vector, 0, fits->extension(4).rows());
         fits->extension(5).column(1).read(this->phi_vector, 0, fits->extension(5).rows());
 
-        this->alpha.reserve(this->r_horizon.size() * this->inclination.size());
-        this->beta.reserve(this->r_horizon.size() * this->inclination.size());
-        this->lensing.reserve(this->r_horizon.size() * this->inclination.size());
+        std::size_t size = this->r_horizon.size() * this->inclination.size();
 
-        for (int i = 6; i < 6 + static_cast<int>(this->r_horizon.size() * this->inclination.size()); ++i)
+        this->alpha.reserve(size);
+        this->beta.reserve(size);
+        this->lensing.reserve(size);
+
+        for (int i = 6; i < 6 + static_cast<int>(size); ++i)
         {
-            std::vector<std::valarray<double>> arr;
+            std::vector<std::valarray<double>> temp;
 
-            fits->extension(i).column("ALPHA", true).readArrays(arr, 0, this->r_vector.size());
-            this->alpha.emplace_back(utils::flatten(arr));
+            fits->extension(i).column("ALPHA", true).readArrays(temp, 0, this->r_vector.size());
+            this->alpha.emplace_back(utils::flatten(temp));
 
-            fits->extension(i).column("BETA", true).readArrays(arr, 0, this->r_vector.size());
-            this->beta.emplace_back(utils::flatten(arr));
+            fits->extension(i).column("BETA", true).readArrays(temp, 0, this->r_vector.size());
+            this->beta.emplace_back(utils::flatten(temp));
 
-            fits->extension(i).column("LENSING", true).readArrays(arr, 0, this->r_vector.size());
-            this->lensing.emplace_back(utils::flatten(arr));
+            fits->extension(i).column("LENSING", true).readArrays(temp, 0, this->r_vector.size());
+            this->lensing.emplace_back(utils::flatten(temp));
         }
     }
 

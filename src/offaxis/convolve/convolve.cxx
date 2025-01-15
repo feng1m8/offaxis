@@ -3,8 +3,8 @@
 
 #include "convolve.hxx"
 
-void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
 specCache *new_specCache(int n_cache, int *status);
+void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
 
 namespace offaxis::relxill
 {

@@ -16,7 +16,7 @@ namespace offaxis
         param[offaxline::normtype] = parameter[offaxconv::normtype];
 
         std::valarray<double> line;
-        ::offaxis::offaxline(envs::energy_conv, param, line);
+        offaxis::offaxline(envs::energy_conv, param, line);
 
         relxill::convolveSpectrumFFTNormalized(energy, line, flux);
     }

@@ -4,7 +4,7 @@ extern "C"
 {
 #include "relxill/src/xilltable.h"
 
-    int version_number_printed;
+    extern int version_number_printed;
 }
 
 namespace offaxis::relxill

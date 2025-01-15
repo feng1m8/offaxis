@@ -4,7 +4,7 @@
 
 namespace offaxis
 {
-    template<typename T, typename... Args>
+    template <typename T, typename... Args>
     class Cache
     {
     private:
@@ -13,15 +13,14 @@ namespace offaxis
         std::deque<std::pair<std::tuple<typename std::remove_reference<Args>::type...>, T>> data;
 
     public:
-        Cache(T (*f)(Args...), std::size_t size) :func(f), size(size) {};
+        Cache(T (*f)(Args...), std::size_t size) : func(f), size(size){};
 
         T operator()(Args... args)
         {
             auto temp = std::tie(args...);
 
-            auto i = std::find_if(this->data.cbegin(), this->data.cend(), [&](auto &i){
-                return i.first == temp;
-            });
+            auto i = std::find_if(this->data.cbegin(), this->data.cend(), [&](auto &i)
+                                  { return i.first == temp; });
 
             if (i == this->data.cend())
             {

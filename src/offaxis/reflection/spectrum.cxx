@@ -57,7 +57,6 @@ namespace offaxis::relxill
     std::valarray<double> Spectrum::convolve(Spectrum::Spec &xill_spec, const std::valarray<double> &energy, const std::valarray<double> &hist) const
     {
         relxill::convolveSpectrumFFTNormalized(energy, hist, xill_spec.energy, xill_spec.flux);
-
         return xill_spec.flux;
     }
 

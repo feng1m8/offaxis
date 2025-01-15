@@ -31,9 +31,9 @@ namespace offaxis::relxill
 
         std::valarray<double> convolve(Spec& xill_spec,const std::valarray<double> &energy, const std::valarray<double> &hist) const;
 
-        double norm;
-
         std::valarray<double> primary(const std::valarray<double> &ener, double ener_shift_source_obs) const;
+
+        double norm;
 
     private:
         xillTableParam parameter;

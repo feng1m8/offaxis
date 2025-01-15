@@ -12,17 +12,17 @@
 
 namespace offaxis
 {
-    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, int nside)
+    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &param, int nside)
     {
         using namespace parameter::offaxline;
 
-        const auto kyn(std::make_unique<const Kyn>(envs::table.at(80), parameter[a_spin], parameter[Incl]));
+        const auto kyn(std::make_unique<const Kyn>(envs::table.at(80), param[a_spin], param[Incl]));
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
         Histogram histogram(energy);
 
-        Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
+        Ray ray(param[rlp], utils::deg2rad(param[thetalp]), utils::deg2rad(param[philp]), &param[vr], param[a_spin], param[Rin], param[Rout]);
 
 #pragma omp declare reduction(+ : Histogram : omp_out += omp_in) initializer(omp_priv = omp_orig)
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
@@ -34,7 +34,7 @@ namespace offaxis
             {
                 double glp = ray.redshift();
                 auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi);
-                double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], ray->lambda) * cosem * lensing;
+                double iobs = gobs * gobs * std::pow(glp, param[gamma]) * redshift(ray->radius, param[a_spin], ray->lambda) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
         }
@@ -46,22 +46,23 @@ namespace offaxis
     {
         using namespace parameter::offaxline;
 
+        if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] > 1.0)
+            flux = std::valarray<double>(std::nan(""), energy.size() - 1);
+
         if (envs::table.count(80) == 0)
             envs::table.try_emplace(80, envs::kydir());
 
         omp_set_num_threads(envs::nthreads());
 
         std::valarray<double> engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
+
         std::valarray<double> param(parameter);
-        // param[lineE] = 1.0;
-        // param[zshift] = 0.0;
-        // param[normtype] = -1.0;
         if (parameter[Rin] < 0.0)
             param[Rin] = -parameter[Rin] * rms(parameter[a_spin]);
 
         flux = offaxline(engs, param, envs::nside());
 
-        if (parameter[normtype] == 0.0)
+        if (parameter[normtype] != -1)
             flux /= flux.sum();
     }
 }
