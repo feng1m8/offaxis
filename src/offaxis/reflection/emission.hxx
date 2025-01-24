@@ -19,6 +19,9 @@ namespace offaxis::offaxxillver
     public:
         Histogram(int n_incl, std::size_t size)
         {
+            this->to_disk = 0;
+            this->to_infinity = 0;
+            this->itot = 0.0;
             this->n_incl = n_incl;
             this->size = size;
             this->data.reserve(size);

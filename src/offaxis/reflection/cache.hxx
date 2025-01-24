@@ -10,7 +10,7 @@ namespace offaxis
         {
             auto env = std::getenv("OFFAXIS_CACHE_SIZE");
             if (env == nullptr)
-                return 0;
+                return 1;
             else
                 return std::atoi(env);
         }
