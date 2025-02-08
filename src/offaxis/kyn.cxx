@@ -28,12 +28,12 @@ namespace offaxis
     {
         static const std::vector<std::string> primarykey{"VALUE", "ALPHA", "BETA", "LENSING"};
 
-        const auto fits(std::make_unique<const CCfits::FITS>(path, CCfits::RWmode::Read, false, primarykey));
+        const CCfits::FITS fits(path, CCfits::RWmode::Read, false, primarykey);
 
-        fits->extension(2).column(1).read(this->r_horizon, 0, fits->extension(2).rows());
-        fits->extension(3).column(1).read(this->inclination, 0, fits->extension(3).rows());
-        fits->extension(4).column(1).read(this->r_vector, 0, fits->extension(4).rows());
-        fits->extension(5).column(1).read(this->phi_vector, 0, fits->extension(5).rows());
+        fits.extension(2).column(1).read(this->r_horizon, 0, fits.extension(2).rows());
+        fits.extension(3).column(1).read(this->inclination, 0, fits.extension(3).rows());
+        fits.extension(4).column(1).read(this->r_vector, 0, fits.extension(4).rows());
+        fits.extension(5).column(1).read(this->phi_vector, 0, fits.extension(5).rows());
 
         std::size_t size = this->r_horizon.size() * this->inclination.size();
 
@@ -45,13 +45,13 @@ namespace offaxis
         {
             std::vector<std::valarray<double>> temp;
 
-            fits->extension(i).column("ALPHA", true).readArrays(temp, 0, this->r_vector.size());
+            fits.extension(i).column("ALPHA", true).readArrays(temp, 0, this->r_vector.size());
             this->alpha.emplace_back(utils::flatten(temp));
 
-            fits->extension(i).column("BETA", true).readArrays(temp, 0, this->r_vector.size());
+            fits.extension(i).column("BETA", true).readArrays(temp, 0, this->r_vector.size());
             this->beta.emplace_back(utils::flatten(temp));
 
-            fits->extension(i).column("LENSING", true).readArrays(temp, 0, this->r_vector.size());
+            fits.extension(i).column("LENSING", true).readArrays(temp, 0, this->r_vector.size());
             this->lensing.emplace_back(utils::flatten(temp));
         }
     }

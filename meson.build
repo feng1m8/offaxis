@@ -159,6 +159,7 @@ python.extension_module(
     limited_api: '3.7',
     install: true,
     subdir: 'offaxis',
+    install_rpath: '$ORIGIN',
 )
 
 python.install_sources(

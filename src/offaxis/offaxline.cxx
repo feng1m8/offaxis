@@ -1,5 +1,3 @@
-#include <memory>
-
 #include <omp.h>
 
 #include "offaxis/parameter.hxx"
@@ -16,7 +14,7 @@ namespace offaxis
     {
         using namespace parameter::offaxline;
 
-        const auto kyn(std::make_unique<const Kyn>(envs::table.at(80), param[a_spin], param[Incl]));
+        const Kyn kyn(envs::table.at(80), param[a_spin], param[Incl]);
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
@@ -33,7 +31,7 @@ namespace offaxis
             if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
             {
                 double glp = ray.redshift();
-                auto [gobs, cosem, lensing] = kyn->interpolate(ray->radius, ray->phi);
+                auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);
                 double iobs = gobs * gobs * std::pow(glp, param[gamma]) * redshift(ray->radius, param[a_spin], ray->lambda) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
