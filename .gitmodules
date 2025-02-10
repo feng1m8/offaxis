@@ -1,8 +1,8 @@
 [submodule "subprojects/YNOGK-CXX"]
 	path = subprojects/YNOGK-CXX
-	url = ../YNOGK-CXX.git
+	url = https://github.com/feng1m8/YNOGK-CXX.git
 	branch = main
 [submodule "src/relxill"]
 	path = src/relxill
-	url = ../relxill.git
+	url = https://github.com/feng1m8/relxill.git
 	branch = main
