@@ -3,6 +3,7 @@
 
 #ifdef __cplusplus
 
+#include <string>
 #include <valarray>
 
 namespace offaxis
@@ -15,6 +16,11 @@ namespace offaxis
 
 extern "C"
 {
+    void coffaxlinexx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void coffaxconvxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void coffaxxillxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void coffaxxillCpxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+
 #endif
 
     void coffaxline(const double *energy, int Nflux, const double *parameter, int spectrum, double *flux, double *fluxVariance, const char *init);

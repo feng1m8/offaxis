@@ -84,6 +84,8 @@ namespace offaxis
         static void offaxxillver(const std::valarray<double> &energy, const std::valarray<double> &param, std::valarray<double> &flux)
         {
             using namespace parameter::offaxxillCp;
+            if (param.size() < Nparam)
+                throw std::out_of_range("RealArray index " + std::to_string(param.size()) + " is out of bounds with size " + std::to_string(Nparam) + ".");
 
             if (param[vr] * param[vr] + param[vtheta] * param[vtheta] + param[vphi] * param[vphi] > 1.0)
                 flux = std::valarray<double>(std::nan(""), energy.size() - 1);
@@ -115,6 +117,8 @@ namespace offaxis
     [[gnu::dllexport]] void offaxxill(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter;
+        if (parameter.size() < offaxxill::Nparam)
+            throw std::out_of_range("RealArray index " + std::to_string(parameter.size()) + " is out of bounds with size " + std::to_string(offaxxill::Nparam) + ".");
 
         std::valarray<double> param(offaxxillCp::Nparam);
         param[std::slice(offaxxillCp::rlp, offaxxillCp::logxi + 1, 1)] = parameter[std::slice(offaxxill::rlp, offaxxill::logxi + 1, 1)];

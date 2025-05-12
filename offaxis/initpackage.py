@@ -27,7 +27,7 @@ def initpackage(builddir, force):
     os.chdir(builddir)
 
     os.system("initpackage offaxis offaxis.dat .")
-    os.system(f'hmake HD_LFLAGS+="{PREFIX / "liboffaxis.so"} -Wl,-rpath,{PREFIX}"')
+    os.system(f'hmake HD_LFLAGS+="{PREFIX / "liboffaxis_cxx.so"} -Wl,-rpath,{PREFIX}"')
 
     os.chdir(cwd)
 

@@ -18,18 +18,29 @@ cdef extern from 'offaxis/offaxis.h':
 
 
 cdef xspecmodel(void (*func)(const valarray[double] &, const valarray[double] &, valarray[double] &) except +):
-    def model(vector[double] energy, vector[double] parameter, flux):
+    def model(vector[double] energy, vector[double] parameter, flux=None):
         cdef valarray[double] engs = valarray[double](energy.data(), energy.size())
         cdef valarray[double] param = valarray[double](parameter.data(), parameter.size())
         cdef valarray[double] cflux = valarray[double](energy.size() - 1)
 
-        for i in range(cflux.size()):
-            cflux[i] = flux[i]
+        if flux is not None and len(flux) > 0:
+            for i in range(cflux.size()):
+                cflux[i] = flux[i]
 
         func(engs, param, cflux)
 
-        for i in range(cflux.size()):
-            flux[i] = cflux[i]
+        if flux is None:
+            flux = []
+            for i in range(cflux.size()):
+                flux.append(cflux[i])
+            return flux
+
+        if len(flux) > 0:
+            for i in range(cflux.size()):
+                flux[i] = cflux[i]
+        else:
+            for i in range(cflux.size()):
+                flux.append(cflux[i])
 
     return model
 

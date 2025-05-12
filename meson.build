@@ -100,8 +100,8 @@ relxill = declare_dependency(
     ],
 )
 
-offaxis = shared_library(
-    'offaxis',
+offaxis_cxx = shared_library(
+    'offaxis_cxx',
     'src/offaxis/envs.cxx',
     'src/offaxis/kyn.cxx',
     'src/offaxis/offaxline.cxx',
@@ -132,9 +132,9 @@ offaxis = shared_library(
     install_dir: python.get_install_dir() / 'offaxis',
 )
 
-offaxis = declare_dependency(
+offaxis_cxx = declare_dependency(
     link_with: [
-        offaxis,
+        offaxis_cxx,
     ],
     include_directories: [
         'include',
@@ -147,10 +147,7 @@ python.extension_module(
     'offaxis',
     'src/offaxis/xspecmodel/offaxis.pyx',
     dependencies: [
-        offaxis,
-    ],
-    cpp_args: [
-        '-DCYTHON_LIMITED_API',
+        offaxis_cxx,
     ],
     override_options: [
         'cython_language=cpp',
@@ -162,8 +159,8 @@ python.extension_module(
 )
 
 python.install_sources(
-    'src/offaxis/xspecmodel/__init__.py',
-    'src/offaxis/xspecmodel/initpackage.py',
-    'src/offaxis/xspecmodel/offaxis.dat',
+    'offaxis/__init__.py',
+    'offaxis/initpackage.py',
+    'offaxis/offaxis.dat',
     subdir: 'offaxis',
 )

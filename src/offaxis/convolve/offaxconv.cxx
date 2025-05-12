@@ -8,6 +8,8 @@ namespace offaxis
     [[gnu::dllexport]] void offaxconv(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter;
+        if (parameter.size() < offaxconv::Nparam)
+            throw std::out_of_range("RealArray index " + std::to_string(parameter.size()) + " is out of bounds with size " + std::to_string(offaxconv::Nparam) + ".");
 
         std::valarray<double> param(offaxline::Nparam);
         param[offaxline::lineE] = 1.0;

@@ -28,7 +28,7 @@ pkg_check_modules(CCfits REQUIRED IMPORTED_TARGET CCfits)
 pkg_check_modules(chealpix REQUIRED IMPORTED_TARGET chealpix)
 
 add_library(
-    "liboffaxis" SHARED
+    "offaxis_cxx" SHARED
     "src/offaxis/envs.cxx"
     "src/offaxis/kyn.cxx"
     "src/offaxis/offaxline.cxx"
@@ -45,16 +45,15 @@ add_library(
 )
 
 target_include_directories(
-    "liboffaxis"
+    "offaxis_cxx"
     PRIVATE "src"
     PUBLIC "include"
 )
 
-set_target_properties("liboffaxis" PROPERTIES OUTPUT_NAME "offaxis")
-target_compile_options("liboffaxis" PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_options("liboffaxis" PRIVATE ${OpenMP_CXX_FLAGS})
+target_compile_options("offaxis_cxx" PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_options("offaxis_cxx" PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(
-    "liboffaxis"
+    "offaxis_cxx"
     PRIVATE ${DL} Relxill ynogk_cxx GSL::gsl PkgConfig::chealpix PkgConfig::CCfits
     INTERFACE $<TARGET_OBJECTS:ynogk_cxx>
 )
@@ -81,14 +80,10 @@ Python_add_library(
 )
 
 set_target_properties("offaxis" PROPERTIES INSTALL_RPATH "$ORIGIN")
-target_link_libraries("offaxis" PRIVATE "liboffaxis")
-target_compile_definitions(
-    "offaxis"
-    PRIVATE "-DCYTHON_LIMITED_API"
-)
+target_link_libraries("offaxis" PRIVATE "offaxis_cxx")
 
 install(
-    TARGETS "liboffaxis"
+    TARGETS "offaxis_cxx"
     RUNTIME DESTINATION "offaxis"
     LIBRARY DESTINATION "offaxis"
 )
@@ -99,8 +94,8 @@ install(
 )
 
 install(
-    FILES "src/offaxis/xspecmodel/__init__.py"
-    FILES "src/offaxis/xspecmodel/initpackage.py"
-    FILES "src/offaxis/xspecmodel/offaxis.dat"
+    FILES "offaxis/__init__.py"
+    FILES "offaxis/initpackage.py"
+    FILES "offaxis/offaxis.dat"
     DESTINATION "offaxis"
 )
