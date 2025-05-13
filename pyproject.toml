@@ -12,10 +12,6 @@ ninja.make-fallback = false
 wheel.py-api = "cp37"
 wheel.license-files = ["LICENSE", "src/relxill/LICENSE", "subprojects/YNOGK-CXX/LICENSE", "subprojects/YNOGK-CXX/YNOGK/LICENSE"]
 
-[tool.meson-python]
-args.install = ['--tags=runtime']
-limited-api = true
-
 [project]
 name = "offaxis"
 version = "1.0.1"

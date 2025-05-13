@@ -50,11 +50,9 @@ target_include_directories(
     PUBLIC "include"
 )
 
-target_compile_options("offaxis_cxx" PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_options("offaxis_cxx" PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(
     "offaxis_cxx"
-    PRIVATE ${DL} Relxill ynogk_cxx GSL::gsl PkgConfig::chealpix PkgConfig::CCfits
+    PRIVATE ${DL} Relxill ynogk_cxx GSL::gsl OpenMP::OpenMP_CXX PkgConfig::chealpix PkgConfig::CCfits
     INTERFACE $<TARGET_OBJECTS:ynogk_cxx>
 )
 
