@@ -1,4 +1,4 @@
-offaxline   14      0.0     1.e20   C_coffaxlinexx      add     0       0
+offaxline   14      0.0     1.e20   C_offaxline_cxx     add     0       0
 lineE       keV     6.4     0.01        0.1     10.0    100.0   1.0
 radius      GM/c^2  6.0     2.0         3.0     100.0   500.0   0.1
 theta       deg     0.0     0.0         0.0     80.0    89.0    -1.0
@@ -14,7 +14,7 @@ gamma       ""      2.0     -10.0       1.0     4.0     10.0    -0.01
 z           ""      0.0     0.0         0.0     10.0    10.0    -0.001
 $normtype   0
 
-offaxconv   12      0.0     1.e20   C_coffaxconvxx      con     0       0
+offaxconv   12      0.0     1.e20   C_offaxconv_cxx     con     0       0
 radius      GM/c^2  6.0     2.0         3.0     100.0   500.0   0.1
 theta       deg     0.0     0.0         0.0     80.0    89.0    -1.0
 phi         deg     0.0     0.0         0.0     360.0   360.0   -1.0    P
@@ -28,7 +28,7 @@ Rout        ""      400.0   1.0         1.0     400.0   1000.0  -0.1
 gamma       ""      2.0     -10.0       1.0     4.0     10.0    -0.01
 $normtype   0
 
-offaxxill   17      0.0     1.e20   C_coffaxxillxx      add     0       0
+offaxxill   17      0.0     1.e20   C_offaxxill_cxx     add     0       0
 radius      GM/c^2  6.0     2.0         3.0     100.0   500.0   0.1
 theta       deg     0.0     0.0         0.0     80.0    89.0    -1.0
 phi         deg     0.0     0.0         0.0     360.0   360.0   -1.0    P
@@ -47,7 +47,7 @@ refl_frac   ""      1.0     -1000.0     0.0     10.0    1000.0  0.01
 z           ""      0.0     0.0         0.0     10.0    10.0    -0.001
 $switch_reflfrac_boost      0
 
-offaxxillCp 18      0.0     1.e20   C_coffaxxillCpxx    add     0       0
+offaxxillCp 18      0.0     1.e20   C_offaxxillCp_cxx   add     0       0
 radius      GM/c^2  6.0     2.0         3.0     100.0   500.0   0.1
 theta       deg     0.0     0.0         0.0     80.0    89.0    -1.0
 phi         deg     0.0     0.0         0.0     360.0   360.0   -1.0    P

@@ -16,10 +16,10 @@ namespace offaxis
 
 extern "C"
 {
-    void coffaxlinexx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
-    void coffaxconvxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
-    void coffaxxillxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
-    void coffaxxillCpxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void offaxline_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void offaxconv_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void offaxxill_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
+    void offaxxillCp_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init);
 
 #endif
 

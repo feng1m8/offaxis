@@ -15,22 +15,22 @@ static void xspecmodel(const double *energy, int Nflux, const double *parameter,
 
 extern "C"
 {
-    void coffaxlinexx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
+    void offaxline_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
     {
         offaxis::offaxline(energy, parameter, flux);
     }
 
-    void coffaxconvxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
+    void offaxconv_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
     {
         offaxis::offaxconv(energy, parameter, flux);
     }
 
-    void coffaxxillxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
+    void offaxxill_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
     {
         offaxis::offaxxill(energy, parameter, flux);
     }
 
-    void coffaxxillCpxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
+    void offaxxillCp_cxx(const std::valarray<double> &energy, const std::valarray<double> &parameter, int spectrum, std::valarray<double> &flux, std::valarray<double> &fluxVariance, const std::string &init)
     {
         offaxis::offaxxillCp(energy, parameter, flux);
     }
