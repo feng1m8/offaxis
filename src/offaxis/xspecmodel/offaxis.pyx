@@ -2,7 +2,7 @@ from libcpp.vector cimport vector
 
 
 cdef extern from '<valarray>' namespace 'std' nogil:
-    cdef cppclass valarray[T] :
+    cdef cppclass valarray[T]:
         valarray() except +
         valarray(T*, size_t) except +
         valarray(size_t) except +
@@ -30,10 +30,7 @@ cdef xspecmodel(void (*func)(const valarray[double] &, const valarray[double] &,
         func(engs, param, cflux)
 
         if flux is None:
-            flux = []
-            for i in range(cflux.size()):
-                flux.append(cflux[i])
-            return flux
+            return [cflux[i] for i in range(cflux.size())]
 
         if len(flux) > 0:
             for i in range(cflux.size()):

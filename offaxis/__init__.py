@@ -1,18 +1,12 @@
 from .offaxis import *
 
 
-def addpymod():
+def lmod():
     from xspec import AllModels
     from pathlib import Path
 
-    info = [[]]
-    with open(Path(__file__).with_name('offaxis.dat')) as f:
-        for i in f.readlines():
-            if i == '\n':
-                info.append([])
-            else:
-                info[-1].append(i.rstrip())
-        info = [tuple(i[1:]) for i in info]
+    info = Path(__file__).with_name('offaxis.dat').read_text().split('\n\n')
+    info = [tuple(i.splitlines()[1:]) for i in info]
 
     AllModels.addPyMod(offaxline, info[0], 'add')
     AllModels.addPyMod(offaxconv, info[1], 'con')
@@ -21,7 +15,7 @@ def addpymod():
 
 
 try:
-    addpymod()
+    lmod()
 except:
     pass
 

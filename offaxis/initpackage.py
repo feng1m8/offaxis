@@ -5,9 +5,6 @@ import argparse
 from pathlib import Path
 
 
-PREFIX = Path(__file__).parent
-
-
 def initpackage(builddir, force):
     builddir = Path(builddir)
     builddir.mkdir(parents=True, exist_ok=True)
@@ -27,7 +24,7 @@ def initpackage(builddir, force):
     os.chdir(builddir)
 
     os.system("initpackage offaxis offaxis.dat .")
-    os.system(f'hmake HD_LFLAGS+="{PREFIX / "liboffaxis_cxx.so"} -Wl,-rpath,{PREFIX}"')
+    os.system(f'hmake HD_LFLAGS+="{PREFIX}/liboffaxis_cxx.so -Wl,-rpath={PREFIX}"')
 
     os.chdir(cwd)
 
@@ -38,4 +35,5 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--force", action="store_true")
     args = parser.parse_args()
 
+    PREFIX = Path(__file__).parent
     initpackage(args.builddir, args.force)
