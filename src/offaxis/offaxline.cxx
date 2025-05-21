@@ -44,7 +44,7 @@ namespace offaxis
     {
         using namespace parameter::offaxline;
         if (parameter.size() < Nparam)
-            throw std::out_of_range("RealArray index " + std::to_string(parameter.size()) + " is out of bounds with size " + std::to_string(Nparam) + ".");
+            throw std::out_of_range("RealArray index " + std::to_string(Nparam - 1) + " is out of bounds with size " + std::to_string(parameter.size()) + ".");
 
         if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] > 1.0)
             flux = std::valarray<double>(std::nan(""), energy.size() - 1);

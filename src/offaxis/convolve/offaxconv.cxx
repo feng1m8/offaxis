@@ -9,7 +9,7 @@ namespace offaxis
     {
         using namespace parameter;
         if (parameter.size() < offaxconv::Nparam)
-            throw std::out_of_range("RealArray index " + std::to_string(parameter.size()) + " is out of bounds with size " + std::to_string(offaxconv::Nparam) + ".");
+            throw std::out_of_range("RealArray index " + std::to_string(offaxconv::Nparam - 1) + " is out of bounds with size " + std::to_string(parameter.size()) + ".");
 
         std::valarray<double> param(offaxline::Nparam);
         param[offaxline::lineE] = 1.0;

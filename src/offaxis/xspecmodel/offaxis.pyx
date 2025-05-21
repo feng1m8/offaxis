@@ -10,15 +10,15 @@ cdef extern from '<valarray>' namespace 'std' nogil:
         size_t size()
 
 
-cdef extern from 'offaxis/offaxis.h':
-    void C_offaxline 'offaxis::offaxline' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
-    void C_offaxconv 'offaxis::offaxconv' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
-    void C_offaxxill 'offaxis::offaxxill' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
-    void C_offaxxillCp 'offaxis::offaxxillCp' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
+cdef extern from 'offaxis/offaxis.h' nogil:
+    void coffaxline 'offaxis::offaxline' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
+    void coffaxconv 'offaxis::offaxconv' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
+    void coffaxxill 'offaxis::offaxxill' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
+    void coffaxxillCp 'offaxis::offaxxillCp' (const valarray[double] &, const valarray[double] &, valarray[double] &) except +
 
 
-cdef xspecmodel(void (*func)(const valarray[double] &, const valarray[double] &, valarray[double] &) except +):
-    def model(vector[double] energy, vector[double] parameter, flux=None):
+cdef xspecmodel(void (*func)(const valarray[double] &, const valarray[double] &, valarray[double] &) except +, str name):
+    def __func__(vector[double] energy, vector[double] parameter, flux=None):
         cdef valarray[double] engs = valarray[double](energy.data(), energy.size())
         cdef valarray[double] param = valarray[double](parameter.data(), parameter.size())
         cdef valarray[double] cflux = valarray[double](energy.size() - 1)
@@ -39,15 +39,12 @@ cdef xspecmodel(void (*func)(const valarray[double] &, const valarray[double] &,
             for i in range(cflux.size()):
                 flux.append(cflux[i])
 
-    return model
+    __func__ = eval('lambda energy, parameter, flux: __func__(energy, parameter, flux)', {'__func__': __func__})
+    __func__.__name__ = name
+    return __func__
 
 
-offaxline = eval('lambda energy, parameter, flux: C_offaxline(energy, parameter, flux)', {'C_offaxline': xspecmodel(&C_offaxline)})
-offaxconv = eval('lambda energy, parameter, flux: C_offaxconv(energy, parameter, flux)', {'C_offaxconv': xspecmodel(&C_offaxconv)})
-offaxxill = eval('lambda energy, parameter, flux: C_offaxxill(energy, parameter, flux)', {'C_offaxxill': xspecmodel(&C_offaxxill)})
-offaxxillCp = eval('lambda energy, parameter, flux: C_offaxxillCp(energy, parameter, flux)', {'C_offaxxillCp': xspecmodel(&C_offaxxillCp)})
-
-offaxline.__name__ = 'offaxline'
-offaxconv.__name__ = 'offaxconv'
-offaxxill.__name__ = 'offaxxill'
-offaxxillCp.__name__ = 'offaxxillCp'
+offaxline = xspecmodel(coffaxline, 'offaxline')
+offaxconv = xspecmodel(coffaxconv, 'offaxconv')
+offaxxill = xspecmodel(coffaxxill, 'offaxxill')
+offaxxillCp = xspecmodel(coffaxxillCp, 'offaxxillCp')
