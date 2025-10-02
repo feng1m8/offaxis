@@ -32,7 +32,7 @@ namespace offaxis
             {
                 double glp = ray.redshift();
                 auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);
-                double iobs = gobs * gobs * std::pow(glp, param[gamma]) * redshift(ray->radius, param[a_spin], ray->lambda) * cosem * lensing;
+                double iobs = gobs * gobs * std::pow(glp, param[gamma]) * redshift(ray->radius, param[a_spin], 0.0) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
         }
