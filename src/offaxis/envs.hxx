@@ -25,7 +25,7 @@ namespace offaxis
     namespace envs
     {
         int nthreads();
-        int nside();
+        long nside();
         std::string kydir();
     }
 }

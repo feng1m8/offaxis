@@ -35,7 +35,7 @@ namespace offaxis::offaxxillver
         return expnu;
     }
 
-    static double to_infinity(double a_spin, double rlp, double theta, int nside)
+    static double to_infinity(double a_spin, double rlp, double theta, long nside)
     {
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
@@ -51,8 +51,8 @@ namespace offaxis::offaxxillver
 #pragma omp parallel for firstprivate(ptcl) reduction(+ : to_inf)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
-            auto [pr, ptheta, pphi] = sphere[pix];
-            ptcl.lambdaq(pr, ptheta, pphi);
+            auto palpha = sphere[pix];
+            ptcl.lambdaq(palpha[0], palpha[1], palpha[2]);
             double pem = ptcl.pemdisk(0.0, 1000.0, 0.0);
             if (pem == -1.0)
                 ++to_inf;

@@ -17,7 +17,7 @@ namespace offaxis
 {
     namespace offaxxillver
     {
-        static Emission offaxis(const std::vector<double> &param, int nside, int n_incl)
+        static Emission offaxis(const std::vector<double> &param, long nside, int n_incl)
         {
             using namespace parameter::offaxconv;
 
@@ -33,9 +33,9 @@ namespace offaxis
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
             for (std::size_t pix = 0; pix < sphere.size; ++pix)
             {
-                auto [pr, ptheta, pphi] = sphere[pix];
+                auto palpha = sphere[pix];
 
-                if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
+                if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
                 {
                     ++histogram.to_disk;
                     auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);

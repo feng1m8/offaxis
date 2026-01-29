@@ -10,7 +10,7 @@
 
 namespace offaxis
 {
-    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &param, int nside)
+    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &param, long nside)
     {
         using namespace parameter::offaxline;
 
@@ -26,9 +26,9 @@ namespace offaxis
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
-            auto [pr, ptheta, pphi] = sphere[pix];
+            auto palpha = sphere[pix];
 
-            if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
+            if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
             {
                 double glp = ray.redshift();
                 auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);

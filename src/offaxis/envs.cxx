@@ -28,13 +28,13 @@ namespace offaxis
                 return std::atoi(env);
         }
 
-        int nside()
+        long nside()
         {
             auto env = std::getenv("OFFAXIS_NUM_SIDE");
             if (env == nullptr)
                 return 64;
             else
-                return std::atoi(env);
+                return std::atol(env);
         }
 
         std::string kydir()
