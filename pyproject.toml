@@ -9,13 +9,13 @@ requires = [
 [tool.scikit-build]
 cmake.args = ["-GNinja"]
 ninja.make-fallback = false
-wheel.py-api = "cp37"
+wheel.py-api = "cp38"
 wheel.license-files = ["LICENSE", "src/relxill/LICENSE", "subprojects/YNOGK-CXX/LICENSE", "subprojects/YNOGK-CXX/YNOGK/LICENSE"]
 
 [project]
 name = "offaxis"
 version = "1.0.1"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",

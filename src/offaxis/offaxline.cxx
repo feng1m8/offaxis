@@ -1,3 +1,6 @@
+#include <cfenv>
+#include <cstdarg>
+
 #include <omp.h>
 
 #include "offaxis/parameter.hxx"
@@ -10,17 +13,17 @@
 
 namespace offaxis
 {
-    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &param, long nside)
+    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, long nside)
     {
         using namespace parameter::offaxline;
 
-        const Kyn kyn(envs::table.at(80), param[a_spin], param[Incl]);
+        const Kyn kyn(envs::table.at(80), parameter[a_spin], parameter[Incl]);
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
         Histogram histogram(energy);
 
-        Ray ray(param[rlp], utils::deg2rad(param[thetalp]), utils::deg2rad(param[philp]), &param[vr], param[a_spin], param[Rin], param[Rout]);
+        Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
 
 #pragma omp declare reduction(+ : Histogram : omp_out += omp_in) initializer(omp_priv = omp_orig)
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
@@ -32,7 +35,7 @@ namespace offaxis
             {
                 double glp = ray.redshift();
                 auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);
-                double iobs = gobs * gobs * std::pow(glp, param[gamma]) * redshift(ray->radius, param[a_spin], 0.0) * cosem * lensing;
+                double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], 0.0) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
         }
@@ -40,14 +43,35 @@ namespace offaxis
         return histogram.get() / sphere.size;
     }
 
+    static std::string string_print_fotmatted(const char *format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
+        va_end(args);
+
+        va_start(args, format);
+        std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
+        va_end(args);
+
+        return buffer;
+    }
+
     [[gnu::dllexport]] void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter::offaxline;
-        if (parameter.size() < Nparam)
-            throw std::out_of_range("RealArray index " + std::to_string(Nparam - 1) + " is out of bounds with size " + std::to_string(parameter.size()) + ".");
 
-        if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] > 1.0)
+        if (parameter.size() < Nparam)
+        {
+            throw std::out_of_range(string_print_fotmatted("RealArray index %zu is out of bounds with size %zu.", Nparam - 1, parameter.size()));
+        }
+
+        if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
+        {
+            std::fetestexcept(FE_INVALID);
             flux = std::valarray<double>(std::nan(""), energy.size() - 1);
+            return;
+        }
 
         if (envs::table.count(80) == 0)
             envs::table.try_emplace(80, envs::kydir());
@@ -56,9 +80,9 @@ namespace offaxis
 
         std::valarray<double> engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
 
-        std::valarray<double> param(parameter);
+        std::valarray<double> param(parameter[std::slice(rlp, gamma - rlp + 1, 1)]);
         if (parameter[Rin] < 0.0)
-            param[Rin] = -parameter[Rin] * rms(parameter[a_spin]);
+            param[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 
         flux = offaxline(engs, param, envs::nside());
 

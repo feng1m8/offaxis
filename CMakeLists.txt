@@ -73,7 +73,7 @@ cython_transpile(
 
 Python_add_library(
     "offaxis" MODULE
-    USE_SABI 3.7 WITH_SOABI
+    USE_SABI 3.8 WITH_SOABI
     ${offaxis_pyx}
 )
 

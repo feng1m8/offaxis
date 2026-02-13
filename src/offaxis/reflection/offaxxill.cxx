@@ -1,3 +1,4 @@
+#include <cfenv>
 #include <omp.h>
 
 #include "offaxis/parameter.hxx"
@@ -84,11 +85,18 @@ namespace offaxis
         static void offaxxillver(const std::valarray<double> &energy, const std::valarray<double> &param, std::valarray<double> &flux)
         {
             using namespace parameter::offaxxillCp;
-            if (param.size() < Nparam)
-                throw std::out_of_range("RealArray index " + std::to_string(Nparam - 1) + " is out of bounds with size " + std::to_string(param.size()) + ".");
 
-            if (param[vr] * param[vr] + param[vtheta] * param[vtheta] + param[vphi] * param[vphi] > 1.0)
+            if (param.size() < Nparam)
+            {
+                throw std::out_of_range("RealArray index " + std::to_string(Nparam - 1) + " is out of bounds with size " + std::to_string(param.size()) + ".");
+            }
+
+            if (param[vr] * param[vr] + param[vtheta] * param[vtheta] + param[vphi] * param[vphi] >= 1.0)
+            {
+                std::fetestexcept(FE_INVALID);
                 flux = std::valarray<double>(std::nan(""), energy.size() - 1);
+                return;
+            }
 
             if (envs::table.count(80) == 0)
                 envs::table.try_emplace(80, envs::kydir());

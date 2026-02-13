@@ -28,7 +28,7 @@ namespace offaxis
     {
         static const std::vector<std::string> primarykey{"VALUE", "ALPHA", "BETA", "LENSING"};
 
-        const CCfits::FITS fits(path, CCfits::RWmode::Read, false, primarykey);
+        const CCfits::FITS fits(path, CCfits::Read, false, primarykey);
 
         fits.extension(2).column(1).read(this->r_horizon, 0, fits.extension(2).rows());
         fits.extension(3).column(1).read(this->inclination, 0, fits.extension(3).rows());
