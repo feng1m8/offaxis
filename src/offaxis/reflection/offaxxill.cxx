@@ -22,7 +22,7 @@ namespace offaxis
         {
             using namespace parameter::offaxconv;
 
-            const Kyn kyn(envs::table.at(80), param[a_spin], param[Incl]);
+            const KBHinterp &kyn(envs::table.at(80).interp(param[a_spin], param[Incl]));
 
             const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
@@ -39,7 +39,7 @@ namespace offaxis
                 if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
                 {
                     ++histogram.to_disk;
-                    auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);
+                    auto [gobs, cosem, lensing] = kyn(ray->radius, ray->phi);
 
                     if (gobs >= EMIN_RELXILL_CONV and gobs < EMAX_RELXILL_CONV)
                     {

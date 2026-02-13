@@ -1,8 +1,8 @@
 #ifndef OFFAXIS_KYN_HXX
 #define OFFAXIS_KYN_HXX
 
+#include <filesystem>
 #include <map>
-#include <string>
 #include <valarray>
 #include <vector>
 
@@ -12,12 +12,16 @@
 
 namespace offaxis
 {
-    class KBHtable
+    class KBHinterp;
+
+    class KBHtables
     {
-        friend class Kyn;
+        friend class KBHinterp;
 
     public:
-        KBHtable(const std::string &path);
+        KBHtables(const std::filesystem::path &path);
+
+        KBHinterp interp(double a_spin, double Incl) const;
 
     private:
         std::vector<double> r_horizon;
@@ -29,13 +33,16 @@ namespace offaxis
         std::vector<std::valarray<double>> lensing;
     };
 
-    class Kyn
+    class KBHinterp
     {
     public:
-        Kyn(const KBHtable &that, double a_spin, double Incl);
-        ~Kyn();
+        KBHinterp(const KBHtables &that, double a_spin, double Incl);
+        ~KBHinterp();
 
-        std::tuple<double, double, double> interpolate(double radius, double phi) const;
+        std::tuple<double, double, double> operator()(double radius, double phi) const;
+
+        KBHinterp(const KBHinterp &) = delete;
+        KBHinterp(KBHinterp &) = delete;
 
     private:
         const std::vector<double> &r_vector;
@@ -58,7 +65,8 @@ namespace offaxis
 
     namespace envs
     {
-        inline std::map<int, const KBHtable> table;
+        inline std::map<int, const KBHtables> table;
+        inline std::map<std::filesystem::path, const KBHtables> kbhtables;
     }
 }
 

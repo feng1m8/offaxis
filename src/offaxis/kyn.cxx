@@ -1,4 +1,5 @@
 #include <CCfits/CCfits>
+#include <filesystem>
 
 #include "envs.hxx"
 #include "kyn.hxx"
@@ -24,11 +25,9 @@ namespace offaxis
         }
     }
 
-    KBHtable::KBHtable(const std::string &path)
+    KBHtables::KBHtables(const std::filesystem::path &path)
     {
-        static const std::vector<std::string> primarykey{"VALUE", "ALPHA", "BETA", "LENSING"};
-
-        const CCfits::FITS fits(path, CCfits::Read, false, primarykey);
+        const CCfits::FITS fits(path.string());
 
         fits.extension(2).column(1).read(this->r_horizon, 0, fits.extension(2).rows());
         fits.extension(3).column(1).read(this->inclination, 0, fits.extension(3).rows());
@@ -43,20 +42,28 @@ namespace offaxis
 
         for (int i = 6; i < 6 + static_cast<int>(size); ++i)
         {
-            std::vector<std::valarray<double>> temp;
+            std::vector<std::valarray<double>> vals;
 
-            fits.extension(i).column("ALPHA", true).readArrays(temp, 0, this->r_vector.size());
-            this->alpha.emplace_back(utils::flatten(temp));
+            CCfits::Column *cols = &fits.extension(i).column("ALPHA", false);
+            cols->readArrays(vals, 0, cols->rows());
+            this->alpha.emplace_back(utils::flatten(vals));
 
-            fits.extension(i).column("BETA", true).readArrays(temp, 0, this->r_vector.size());
-            this->beta.emplace_back(utils::flatten(temp));
+            cols = &fits.extension(i).column("BETA", false);
+            cols->readArrays(vals, 0, cols->rows());
+            this->beta.emplace_back(utils::flatten(vals));
 
-            fits.extension(i).column("LENSING", true).readArrays(temp, 0, this->r_vector.size());
-            this->lensing.emplace_back(utils::flatten(temp));
+            cols = &fits.extension(i).column("LENSING", false);
+            cols->readArrays(vals, 0, cols->rows());
+            this->lensing.emplace_back(utils::flatten(vals));
         }
     }
 
-    Kyn::Kyn(const KBHtable &that, double a_spin, double Incl) : r_vector(that.r_vector), phi_vector(that.phi_vector)
+    KBHinterp KBHtables::interp(double a_spin, double Incl) const
+    {
+        return KBHinterp(*this, a_spin, Incl);
+    }
+
+    KBHinterp::KBHinterp(const KBHtables &that, double a_spin, double Incl) : r_vector(that.r_vector), phi_vector(that.phi_vector)
     {
         this->a_spin = a_spin;
         this->a_spin_sq = a_spin * a_spin;
@@ -103,7 +110,7 @@ namespace offaxis
         this->acc[1] = gsl_interp_accel_alloc();
     }
 
-    Kyn::~Kyn()
+    KBHinterp::~KBHinterp()
     {
         gsl_interp2d_free(this->spline[0]);
         gsl_interp2d_free(this->spline[1]);
@@ -113,7 +120,7 @@ namespace offaxis
         gsl_interp_accel_free(this->acc[1]);
     }
 
-    std::tuple<double, double, double> Kyn::interpolate(double radius, double phi) const
+    std::tuple<double, double, double> KBHinterp::operator()(double radius, double phi) const
     {
         double r_kerr = radius - this->r_plus;
         double phi_kerr = this->phi_a * std::log(r_kerr / (radius - this->r_minus));

@@ -17,7 +17,8 @@ namespace offaxis
     {
         using namespace parameter::offaxline;
 
-        const Kyn kyn(envs::table.at(80), parameter[a_spin], parameter[Incl]);
+        const KBHinterp kyn(envs::table.at(80).interp(parameter[a_spin], parameter[Incl]));
+        // const KBHinterp kyn(envs::kbhtables.try_emplace(envs::kydir(), envs::kydir()).first->second.interp(parameter[a_spin], parameter[Incl]));
 
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
@@ -34,7 +35,7 @@ namespace offaxis
             if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
             {
                 double glp = ray.redshift();
-                auto [gobs, cosem, lensing] = kyn.interpolate(ray->radius, ray->phi);
+                auto [gobs, cosem, lensing] = kyn(ray->radius, ray->phi);
                 double iobs = gobs * gobs * std::pow(glp, parameter[gamma]) * redshift(ray->radius, parameter[a_spin], 0.0) * cosem * lensing;
                 histogram.accumulate(gobs, iobs);
             }
@@ -43,18 +44,21 @@ namespace offaxis
         return histogram.get() / sphere.size;
     }
 
-    static std::string string_print_fotmatted(const char *format, ...)
+    namespace utils
     {
-        va_list args;
-        va_start(args, format);
-        std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
-        va_end(args);
+        static std::string string_print_fotmatted(const char *format, ...)
+        {
+            va_list args;
+            va_start(args, format);
+            std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
+            va_end(args);
 
-        va_start(args, format);
-        std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
-        va_end(args);
+            va_start(args, format);
+            std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
+            va_end(args);
 
-        return buffer;
+            return buffer;
+        }
     }
 
     [[gnu::dllexport]] void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
@@ -63,7 +67,7 @@ namespace offaxis
 
         if (parameter.size() < Nparam)
         {
-            throw std::out_of_range(string_print_fotmatted("RealArray index %zu is out of bounds with size %zu.", Nparam - 1, parameter.size()));
+            throw std::out_of_range(utils::string_print_fotmatted("RealArray index %zu is out of bounds with size %zu.", Nparam - 1, parameter.size()));
         }
 
         if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
