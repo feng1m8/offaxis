@@ -25,7 +25,7 @@ namespace offaxis
         std::deque<std::pair<std::tuple<typename std::remove_reference<Args>::type...>, T>> data;
 
     public:
-        Cache(T (*f)(Args...), std::size_t size) : func(f), size(size){};
+        Cache(T (*f)(Args...), std::size_t size) : func(f), size(size) {};
 
         T operator()(Args... args)
         {

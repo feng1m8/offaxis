@@ -24,7 +24,7 @@ namespace offaxis::parameter
             zshift,
             normtype,
 
-            Nparam,
+            Nparams,
         };
     }
 
@@ -45,7 +45,7 @@ namespace offaxis::parameter
             gamma,
             normtype,
 
-            Nparam,
+            Nparams,
         };
     }
 
@@ -71,7 +71,7 @@ namespace offaxis::parameter
             zshift,
             switch_reflfrac_boost,
 
-            Nparam,
+            Nparams,
         };
     }
 
@@ -98,7 +98,7 @@ namespace offaxis::parameter
             zshift,
             switch_reflfrac_boost,
 
-            Nparam,
+            Nparams,
         };
     }
 }

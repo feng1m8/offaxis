@@ -2,7 +2,6 @@
 #define OFFAXIS_ENVS_HXX
 
 #include <filesystem>
-#include <string>
 
 #include <math.h>
 
@@ -26,7 +25,7 @@ namespace offaxis
     {
         int nthreads();
         long nside();
-        std::string kydir();
+        std::filesystem::path kydir();
     }
 }
 

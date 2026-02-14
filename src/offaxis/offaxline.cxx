@@ -2,6 +2,7 @@
 #include <cstdarg>
 
 #include <omp.h>
+#include <valarray>
 
 #include "offaxis/parameter.hxx"
 
@@ -11,21 +12,40 @@
 #include "raytracing.hxx"
 #include "sphere.hxx"
 
+#include "reflection/cache.hxx"
+
 namespace offaxis
 {
-    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, long nside)
+    namespace utils
     {
-        using namespace parameter::offaxline;
+        static std::string string_print_fotmatted(const char *format, ...)
+        {
+            va_list args;
+            va_start(args, format);
+            std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
+            va_end(args);
 
-        const KBHinterp kyn(envs::table.at(80).interp(parameter[a_spin], parameter[Incl]));
-        // const KBHinterp kyn(envs::kbhtables.try_emplace(envs::kydir(), envs::kydir()).first->second.interp(parameter[a_spin], parameter[Incl]));
+            va_start(args, format);
+            std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
+            va_end(args);
 
+            return buffer;
+        }
+    }
+
+    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, const std::tuple<long, std::filesystem::path> &environment)
+    {
+        using namespace parameter::offaxconv;
+
+        auto &[nside, kydir] = environment;
+        const KBHinterp kyn(envs::kbhtables.try_emplace(kydir, kydir).first->second.interp(parameter[a_spin], parameter[Incl]));
         const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
         Histogram histogram(energy);
 
         Ray ray(parameter[rlp], utils::deg2rad(parameter[thetalp]), utils::deg2rad(parameter[philp]), &parameter[vr], parameter[a_spin], parameter[Rin], parameter[Rout]);
 
+        omp_set_num_threads(envs::nthreads());
 #pragma omp declare reduction(+ : Histogram : omp_out += omp_in) initializer(omp_priv = omp_orig)
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
@@ -44,30 +64,13 @@ namespace offaxis
         return histogram.get() / sphere.size;
     }
 
-    namespace utils
-    {
-        static std::string string_print_fotmatted(const char *format, ...)
-        {
-            va_list args;
-            va_start(args, format);
-            std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
-            va_end(args);
-
-            va_start(args, format);
-            std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
-            va_end(args);
-
-            return buffer;
-        }
-    }
-
     [[gnu::dllexport]] void offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter::offaxline;
 
-        if (parameter.size() < Nparam)
+        if (parameter.size() < Nparams)
         {
-            throw std::out_of_range(utils::string_print_fotmatted("RealArray index %zu is out of bounds with size %zu.", Nparam - 1, parameter.size()));
+            throw std::out_of_range(utils::string_print_fotmatted("RealArray index %zu is out of bounds with size %zu.", Nparams - 1, parameter.size()));
         }
 
         if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
@@ -77,18 +80,15 @@ namespace offaxis
             return;
         }
 
-        if (envs::table.count(80) == 0)
-            envs::table.try_emplace(80, envs::kydir());
-
-        omp_set_num_threads(envs::nthreads());
-
         std::valarray<double> engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
 
         std::valarray<double> param(parameter[std::slice(rlp, gamma - rlp + 1, 1)]);
         if (parameter[Rin] < 0.0)
             param[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 
-        flux = offaxline(engs, param, envs::nside());
+        // static Cache<std::valarray<double>, const std::valarray<double> &, const std::valarray<double> &, const std::tuple<long, std::filesystem::path> &> memo(offaxline, envs::cache_size());
+
+        flux = offaxline(engs, param, {envs::nside(), envs::kydir()});
 
         if (parameter[normtype] != -1.0)
             flux /= flux.sum();

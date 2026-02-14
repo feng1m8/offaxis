@@ -59,7 +59,7 @@ namespace offaxis
         {
             using namespace parameter;
 
-            std::vector<double> param(offaxconv::Nparam);
+            std::vector<double> param(offaxconv::Nparams);
             std::copy(std::begin(parameter) + offaxxillCp::rlp, std::begin(parameter) + offaxxillCp::gamma + 1, param.begin() + offaxconv::rlp);
             if (parameter[offaxxillCp::Rin] < 0.0)
                 param[offaxconv::Rin] = -parameter[offaxxillCp::Rin] * rms(parameter[offaxxillCp::a_spin]);
@@ -86,9 +86,9 @@ namespace offaxis
         {
             using namespace parameter::offaxxillCp;
 
-            if (param.size() < Nparam)
+            if (param.size() < Nparams)
             {
-                throw std::out_of_range("RealArray index " + std::to_string(Nparam - 1) + " is out of bounds with size " + std::to_string(param.size()) + ".");
+                throw std::out_of_range("RealArray index " + std::to_string(Nparams - 1) + " is out of bounds with size " + std::to_string(param.size()) + ".");
             }
 
             if (param[vr] * param[vr] + param[vtheta] * param[vtheta] + param[vphi] * param[vphi] >= 1.0)
@@ -125,10 +125,12 @@ namespace offaxis
     [[gnu::dllexport]] void offaxxill(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter;
-        if (parameter.size() < offaxxill::Nparam)
-            throw std::out_of_range("RealArray index " + std::to_string(offaxxill::Nparam - 1) + " is out of bounds with size " + std::to_string(parameter.size()) + ".");
+        if (parameter.size() < offaxxill::Nparams)
+        {
+            throw std::out_of_range("RealArray index " + std::to_string(offaxxill::Nparams - 1) + " is out of bounds with size " + std::to_string(parameter.size()) + ".");
+        }
 
-        std::valarray<double> param(offaxxillCp::Nparam);
+        std::valarray<double> param(offaxxillCp::Nparams);
         param[std::slice(offaxxillCp::rlp, offaxxillCp::logxi + 1, 1)] = parameter[std::slice(offaxxill::rlp, offaxxill::logxi + 1, 1)];
         param[offaxxillCp::logN] = 15.0;
         param[offaxxillCp::Afe] = parameter[offaxxill::Afe];

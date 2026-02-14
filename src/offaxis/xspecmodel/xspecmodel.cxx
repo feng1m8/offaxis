@@ -37,21 +37,21 @@ extern "C"
 
     void coffaxline(const double *energy, int Nflux, const double *parameter, int spectrum, double *flux, double *fluxVariance, const char *init)
     {
-        xspecmodel<offaxis::offaxline, offaxis::parameter::offaxline::Nparam>(energy, Nflux, parameter, flux);
+        xspecmodel<offaxis::offaxline, offaxis::parameter::offaxline::Nparams>(energy, Nflux, parameter, flux);
     }
 
     void coffaxconv(const double *energy, int Nflux, const double *parameter, int spectrum, double *flux, double *fluxVariance, const char *init)
     {
-        xspecmodel<offaxis::offaxconv, offaxis::parameter::offaxconv::Nparam>(energy, Nflux, parameter, flux);
+        xspecmodel<offaxis::offaxconv, offaxis::parameter::offaxconv::Nparams>(energy, Nflux, parameter, flux);
     }
 
     void coffaxxill(const double *energy, int Nflux, const double *parameter, int spectrum, double *flux, double *fluxVariance, const char *init)
     {
-        xspecmodel<offaxis::offaxxill, offaxis::parameter::offaxxill::Nparam>(energy, Nflux, parameter, flux);
+        xspecmodel<offaxis::offaxxill, offaxis::parameter::offaxxill::Nparams>(energy, Nflux, parameter, flux);
     }
 
     void coffaxxillCp(const double *energy, int Nflux, const double *parameter, int spectrum, double *flux, double *fluxVariance, const char *init)
     {
-        xspecmodel<offaxis::offaxxillCp, offaxis::parameter::offaxxillCp::Nparam>(energy, Nflux, parameter, flux);
+        xspecmodel<offaxis::offaxxillCp, offaxis::parameter::offaxxillCp::Nparams>(energy, Nflux, parameter, flux);
     }
 }

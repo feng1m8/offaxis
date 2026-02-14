@@ -11,9 +11,9 @@ namespace offaxis
         {
             Dl_info dli;
             if (dladdr(reinterpret_cast<void *>(abspath), &dli) == 0)
-                return std::filesystem::current_path() / ".";
+                return std::filesystem::current_path();
             else
-                return std::filesystem::absolute(dli.dli_fname);
+                return std::filesystem::absolute(dli.dli_fname).parent_path();
         }
     }
 
@@ -37,14 +37,16 @@ namespace offaxis
                 return std::atol(env);
         }
 
-        std::string kydir()
+        std::filesystem::path kydir()
         {
+            static const std::filesystem::path KBHtables80("KBHtables80.fits");
+
             auto env = std::getenv("OFFAXIS_TABLE_PATH");
             if (env != nullptr)
             {
-                auto fp = std::filesystem::path(env) / "KBHtables80.fits";
+                auto fp = env / KBHtables80;
                 if (std::filesystem::exists(fp))
-                    return fp.string();
+                    return std::filesystem::canonical(fp);
                 else
                     throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
             }
@@ -52,9 +54,9 @@ namespace offaxis
             env = std::getenv("KYN_TABLE_PATH");
             if (env != nullptr)
             {
-                auto fp = std::filesystem::path(env) / "KBHtables80.fits";
+                auto fp = env / KBHtables80;
                 if (std::filesystem::exists(fp))
-                    return fp.string();
+                    return std::filesystem::canonical(fp);
                 else
                     throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
             }
@@ -62,20 +64,20 @@ namespace offaxis
             env = std::getenv("KYDIR");
             if (env != nullptr)
             {
-                auto fp = std::filesystem::path(env) / "KBHtables80.fits";
+                auto fp = env / KBHtables80;
                 if (std::filesystem::exists(fp))
-                    return fp.string();
+                    return std::filesystem::canonical(fp);
                 else
                     throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
             }
 
-            auto fp = std::filesystem::current_path() / "KBHtables80.fits";
+            auto fp = std::filesystem::current_path() / KBHtables80;
             if (std::filesystem::exists(fp))
-                return fp.string();
+                return std::filesystem::canonical(fp);
 
-            fp = utils::abspath().replace_filename("KBHtables80.fits");
+            fp = utils::abspath() / KBHtables80;
             if (std::filesystem::exists(fp))
-                return fp.string();
+                return std::filesystem::canonical(fp);
 
             throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
         }
