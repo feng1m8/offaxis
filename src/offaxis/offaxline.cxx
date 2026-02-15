@@ -1,7 +1,10 @@
 #include <cfenv>
 #include <cstdarg>
 
+#include <iterator>
 #include <omp.h>
+#include <string>
+#include <string_view>
 #include <valarray>
 
 #include "offaxis/parameter.hxx"
@@ -33,7 +36,7 @@ namespace offaxis
         }
     }
 
-    static std::valarray<double> offaxline(const std::valarray<double> &energy, const std::valarray<double> &parameter, const std::tuple<long, std::filesystem::path> &environment)
+    static std::valarray<double> offaxline(std::basic_string_view<double> energy, std::basic_string_view<double> parameter, const std::tuple<long, std::filesystem::path> &environment)
     {
         using namespace parameter::offaxconv;
 
@@ -82,13 +85,13 @@ namespace offaxis
 
         std::valarray<double> engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
 
-        std::valarray<double> param(parameter[std::slice(rlp, gamma - rlp + 1, 1)]);
+        std::valarray<double> params(parameter[std::slice(rlp, gamma - rlp + 1, 1)]);
         if (parameter[Rin] < 0.0)
-            param[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
+            params[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 
-        // static Cache<std::valarray<double>, const std::valarray<double> &, const std::valarray<double> &, const std::tuple<long, std::filesystem::path> &> memo(offaxline, envs::cache_size());
+        static Cache<std::valarray<double>, std::basic_string_view<double>, std::basic_string_view<double>, const std::tuple<long, std::filesystem::path> &> memo(offaxline, envs::cache_size());
 
-        flux = offaxline(engs, param, {envs::nside(), envs::kydir()});
+        flux = memo({std::begin(engs), engs.size()}, {std::begin(engs), engs.size()}, {envs::nside(), envs::kydir()});
 
         if (parameter[normtype] != -1.0)
             flux /= flux.sum();

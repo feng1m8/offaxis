@@ -20,8 +20,8 @@ namespace offaxis
     class Cache
     {
     private:
-        std::function<T(Args...)> func;
-        std::size_t size;
+        const std::function<T(Args...)> func;
+        const std::size_t size;
         std::deque<std::pair<std::tuple<typename std::remove_reference<Args>::type...>, T>> data;
 
     public:
