@@ -27,7 +27,7 @@ namespace offaxis
 
         double pem = this->ptcl.pemdisk(0.0, this->Rout, this->Rin);
         if (pem < 0.0)
-            return Ray::InfinityOrBlackHole;
+            return Ray::Tracing(pem);
 
         this->ptcl->phi = this->phi2rad - this->ptcl.phi(pem);
         return Ray::Disk;

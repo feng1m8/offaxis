@@ -3,24 +3,64 @@
 
 #include "convolve.hxx"
 
-specCache *new_specCache(int n_cache, int *status);
 void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
 
 namespace offaxis::relxill
 {
+    specCache *new_specCache()
+    {
+        auto *spec = new specCache;
+
+        spec->n_cache = 1;
+        spec->nzones = 0;
+        spec->n_ener = N_ENER_CONV;
+
+        spec->conversion_factor_energyflux = nullptr;
+
+        spec->fft_xill = new double **[1];
+        spec->fft_rel = new double **[1];
+
+        spec->fftw_xill = new fftw_complex *[1];
+        spec->fftw_rel = new fftw_complex *[1];
+
+        spec->fftw_backwards_input = fftw_alloc_complex(spec->n_ener);
+        spec->fftw_output = new double[spec->n_ener];
+
+        spec->plan_c2r = fftw_plan_dft_c2r_1d(spec->n_ener, spec->fftw_backwards_input, spec->fftw_output, FFTW_ESTIMATE);
+
+        spec->xill_spec = new xillSpec *[1];
+
+        spec->fft_xill[1] = new double *[2];
+        spec->fft_rel[1] = new double *[2];
+
+        spec->fftw_xill[1] = fftw_alloc_complex(spec->n_ener);
+        spec->fftw_rel[1] = fftw_alloc_complex(spec->n_ener);
+
+        for (int jj = 0; jj < 2; jj++)
+        {
+            spec->fft_xill[1][jj] = new double[spec->n_ener];
+            spec->fft_rel[1][jj] = new double[spec->n_ener];
+        }
+        spec->xill_spec[1] = nullptr;
+
+        spec->out_spec = nullptr;
+
+        return spec;
+    }
+
     void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0)
     {
         int status = EXIT_SUCCESS;
 
         double fxill[N_ENER_CONV];
-        rebin_spectrum(std::begin(envs::energy_conv), fxill, N_ENER_CONV, std::begin(ener0), std::begin(flu0), flu0.size());
+        _rebin_spectrum(std::begin(envs::energy_conv), fxill, N_ENER_CONV, std::begin(ener0), std::begin(flu0), flu0.size());
 
         double fout[N_ENER_CONV];
-        std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(1, nullptr), free_specCache);
+        std::unique_ptr<specCache, std::function<void(specCache *)>> spec_cache(new_specCache(), free_specCache);
         convolveSpectrumFFTNormalized(std::begin(envs::energy_conv), fxill, std::begin(frel), fout, N_ENER_CONV, 1, 1, 0, spec_cache.get(), &status);
 
         flu0.resize(ener.size() - 1);
-        rebin_spectrum(std::begin(ener), std::begin(flu0), flu0.size(), std::begin(envs::energy_conv), fout, N_ENER_CONV);
+        _rebin_spectrum(std::begin(ener), std::begin(flu0), flu0.size(), std::begin(envs::energy_conv), fout, N_ENER_CONV);
     }
 
     void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, std::valarray<double> &flu0)

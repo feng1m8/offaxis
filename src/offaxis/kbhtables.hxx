@@ -65,7 +65,8 @@ namespace offaxis
 
     namespace envs
     {
-        inline std::map<int, const KBHtables> table;
+        std::filesystem::path kydir();
+
         inline std::map<std::filesystem::path, const KBHtables> kbhtables;
     }
 }

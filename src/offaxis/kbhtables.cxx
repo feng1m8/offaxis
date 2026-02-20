@@ -2,18 +2,61 @@
 #include <filesystem>
 
 #include "envs.hxx"
-#include "kyn.hxx"
+#include "kbhtables.hxx"
 #include "raytracing.hxx"
 
 namespace offaxis
 {
+    namespace envs
+    {
+        std::filesystem::path kydir()
+        {
+            static const std::filesystem::path KBHtables80("KBHtables80.fits");
+
+            auto env = std::getenv("OFFAXIS_TABLE_PATH");
+            if (env != nullptr)
+            {
+                auto fp = env / KBHtables80;
+                if (std::filesystem::exists(fp))
+                    return std::filesystem::canonical(fp);
+                else
+                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
+            }
+
+            env = std::getenv("KYN_TABLE_PATH");
+            if (env != nullptr)
+            {
+                auto fp = env / KBHtables80;
+                if (std::filesystem::exists(fp))
+                    return std::filesystem::canonical(fp);
+                else
+                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
+            }
+
+            env = std::getenv("KYDIR");
+            if (env != nullptr)
+            {
+                auto fp = env / KBHtables80;
+                if (std::filesystem::exists(fp))
+                    return std::filesystem::canonical(fp);
+                else
+                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
+            }
+
+            auto fp = std::filesystem::current_path() / KBHtables80;
+            if (std::filesystem::exists(fp))
+                return std::filesystem::canonical(fp);
+
+            fp = utils::abspath() / KBHtables80;
+            if (std::filesystem::exists(fp))
+                return std::filesystem::canonical(fp);
+
+            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
+        }
+    }
+
     namespace utils
     {
-        static double mod(double x1, double x2)
-        {
-            return x1 - x2 * std::floor(x1 / x2);
-        }
-
         static std::valarray<double> flatten(const std::vector<std::valarray<double>> &input)
         {
             std::valarray<double> output(input.size() * input[0].size());
@@ -85,7 +128,12 @@ namespace offaxis
         double drplus = (r_plus - that.r_horizon[i_rplus - 1]) / (that.r_horizon[i_rplus] - that.r_horizon[i_rplus - 1]);
         double dincl = (Incl - that.inclination[i_incl - 1]) / (that.inclination[i_incl] - that.inclination[i_incl - 1]);
 
-        double weights[4] = {(1.0 - drplus) * (1.0 - dincl), (1.0 - drplus) * dincl, drplus * (1.0 - dincl), drplus * dincl};
+        double weights[4] = {
+            (1.0 - drplus) * (1.0 - dincl),
+            (1.0 - drplus) * dincl,
+            drplus * (1.0 - dincl),
+            drplus * dincl,
+        };
 
         std::size_t index[4] = {
             (i_rplus - 1) * that.inclination.size() + (i_incl - 1),
@@ -94,9 +142,18 @@ namespace offaxis
             i_rplus * that.inclination.size() + i_incl,
         };
 
-        this->alpha = weights[0] * that.alpha[index[0]] + weights[1] * that.alpha[index[1]] + weights[2] * that.alpha[index[2]] + weights[3] * that.alpha[index[3]];
-        this->beta = weights[0] * that.beta[index[0]] + weights[1] * that.beta[index[1]] + weights[2] * that.beta[index[2]] + weights[3] * that.beta[index[3]];
-        this->lensing = weights[0] * that.lensing[index[0]] + weights[1] * that.lensing[index[1]] + weights[2] * that.lensing[index[2]] + weights[3] * that.lensing[index[3]];
+        this->alpha = weights[0] * that.alpha[index[0]] +
+                      weights[1] * that.alpha[index[1]] +
+                      weights[2] * that.alpha[index[2]] +
+                      weights[3] * that.alpha[index[3]];
+        this->beta = weights[0] * that.beta[index[0]] +
+                     weights[1] * that.beta[index[1]] +
+                     weights[2] * that.beta[index[2]] +
+                     weights[3] * that.beta[index[3]];
+        this->lensing = weights[0] * that.lensing[index[0]] +
+                        weights[1] * that.lensing[index[1]] +
+                        weights[2] * that.lensing[index[2]] +
+                        weights[3] * that.lensing[index[3]];
 
         this->spline[0] = gsl_interp2d_alloc(gsl_interp2d_bilinear, this->phi_vector.size(), this->r_vector.size());
         this->spline[1] = gsl_interp2d_alloc(gsl_interp2d_bilinear, this->phi_vector.size(), this->r_vector.size());

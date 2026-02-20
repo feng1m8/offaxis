@@ -3,10 +3,10 @@
 #include "offaxis/parameter.hxx"
 #include "ynogk_cxx/particle.hxx"
 
-#include "offaxis/envs.hxx"
-#include "offaxis/sphere.hxx"
+#include "offaxline/envs.hxx"
+#include "offaxline/memory.hxx"
+#include "offaxline/sphere.hxx"
 
-#include "cache.hxx"
 #include "spectrum.hxx"
 
 namespace offaxis::offaxxillver
@@ -74,7 +74,8 @@ namespace offaxis::offaxxillver
 
         const relxill::Spectrum spectrum(parameter, prim_type);
 
-        static Cache to_inf(to_infinity, envs::cache_size());
+        static Memory to_inf(to_infinity);
+        to_inf.max_size = envs::cache_size();
 
         double f_prim = to_inf(parameter[a_spin], parameter[rlp], parameter[thetalp], envs::nside() / 2);
         double beaming = dinf * dinf * std::pow(ginf, parameter[gamma]);

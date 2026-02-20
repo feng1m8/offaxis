@@ -10,10 +10,11 @@ namespace offaxis
     class Ray
     {
     public:
-        enum Tracing
+        enum Tracing : int
         {
             Disk,
-            InfinityOrBlackHole,
+            Infinity = -1,
+            BlackHole = -2,
         };
 
         Ray(double radius, double theta2rad, double phi2rad, const double *velo, double a_spin, double Rin, double Rout);

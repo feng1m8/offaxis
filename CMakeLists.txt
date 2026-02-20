@@ -5,13 +5,14 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 project("offaxis"
     LANGUAGES CXX
+    VERSION "2.3.1"
 )
 
 file(GENERATE OUTPUT ".gitignore" CONTENT "*")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -30,7 +31,7 @@ pkg_check_modules(chealpix REQUIRED IMPORTED_TARGET chealpix)
 add_library(
     "offaxis_cxx" SHARED
     "src/offaxis/envs.cxx"
-    "src/offaxis/kyn.cxx"
+    "src/offaxis/kbhtables.cxx"
     "src/offaxis/offaxline.cxx"
     "src/offaxis/raytracing.cxx"
     "src/offaxis/sphere.cxx"
@@ -52,7 +53,13 @@ target_include_directories(
 
 target_link_libraries(
     "offaxis_cxx"
-    PRIVATE ${DL} Relxill ynogk_cxx GSL::gsl OpenMP::OpenMP_CXX PkgConfig::chealpix PkgConfig::CCfits
+    PRIVATE ${DL}
+    PRIVATE Relxill 
+    PRIVATE ynogk_cxx
+    PRIVATE GSL::gsl
+    PRIVATE OpenMP::OpenMP_CXX
+    PRIVATE PkgConfig::chealpix
+    PRIVATE PkgConfig::CCfits
     INTERFACE $<TARGET_OBJECTS:ynogk_cxx>
 )
 
@@ -82,8 +89,7 @@ target_link_libraries("offaxis" PRIVATE "offaxis_cxx")
 
 install(
     TARGETS "offaxis_cxx"
-    RUNTIME DESTINATION "offaxis"
-    LIBRARY DESTINATION "offaxis"
+    DESTINATION "offaxis"
 )
 
 install(

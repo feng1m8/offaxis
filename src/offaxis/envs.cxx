@@ -1,5 +1,5 @@
+#include <cstdarg>
 #include <filesystem>
-#include <system_error>
 
 #include <dlfcn.h>
 
@@ -15,6 +15,20 @@ namespace offaxis
             else
                 return std::filesystem::absolute(dli.dli_fname).parent_path();
         }
+
+        std::string fotmat(const char *format, ...)
+        {
+            std::va_list args;
+            va_start(args, format);
+            std::string buffer(std::vsnprintf(nullptr, 0, format, args), '\0');
+            va_end(args);
+
+            va_start(args, format);
+            std::vsnprintf(buffer.data(), buffer.size() + 1, format, args);
+            va_end(args);
+
+            return buffer;
+        }
     }
 
     namespace envs
@@ -26,60 +40,6 @@ namespace offaxis
                 return 1;
             else
                 return std::atoi(env);
-        }
-
-        long nside()
-        {
-            auto env = std::getenv("OFFAXIS_NUM_SIDE");
-            if (env == nullptr)
-                return 64;
-            else
-                return std::atol(env);
-        }
-
-        std::filesystem::path kydir()
-        {
-            static const std::filesystem::path KBHtables80("KBHtables80.fits");
-
-            auto env = std::getenv("OFFAXIS_TABLE_PATH");
-            if (env != nullptr)
-            {
-                auto fp = env / KBHtables80;
-                if (std::filesystem::exists(fp))
-                    return std::filesystem::canonical(fp);
-                else
-                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
-            }
-
-            env = std::getenv("KYN_TABLE_PATH");
-            if (env != nullptr)
-            {
-                auto fp = env / KBHtables80;
-                if (std::filesystem::exists(fp))
-                    return std::filesystem::canonical(fp);
-                else
-                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
-            }
-
-            env = std::getenv("KYDIR");
-            if (env != nullptr)
-            {
-                auto fp = env / KBHtables80;
-                if (std::filesystem::exists(fp))
-                    return std::filesystem::canonical(fp);
-                else
-                    throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
-            }
-
-            auto fp = std::filesystem::current_path() / KBHtables80;
-            if (std::filesystem::exists(fp))
-                return std::filesystem::canonical(fp);
-
-            fp = utils::abspath() / KBHtables80;
-            if (std::filesystem::exists(fp))
-                return std::filesystem::canonical(fp);
-
-            throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
         }
     }
 }

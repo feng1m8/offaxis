@@ -4,12 +4,12 @@
 #include "offaxis/parameter.hxx"
 #include "relxill/src/Relbase.h"
 
-#include "offaxis/envs.hxx"
-#include "offaxis/kyn.hxx"
-#include "offaxis/raytracing.hxx"
-#include "offaxis/sphere.hxx"
+#include "offaxline/envs.hxx"
+#include "offaxline/kbhtables.hxx"
+#include "offaxline/memory.hxx"
+#include "offaxline/raytracing.hxx"
+#include "offaxline/sphere.hxx"
 
-#include "cache.hxx"
 #include "emission.hxx"
 #include "primary.hxx"
 #include "spectrum.hxx"
@@ -22,7 +22,8 @@ namespace offaxis
         {
             using namespace parameter::offaxconv;
 
-            const KBHinterp &kyn(envs::table.at(80).interp(param[a_spin], param[Incl]));
+            std::filesystem::path kydir(envs::kydir());
+            const KBHinterp &kyn(envs::kbhtables.try_emplace(kydir, kydir).first->second.interp(param[a_spin], param[Incl]));
 
             const Sphere &sphere(envs::sphere.try_emplace(nside, nside).first->second);
 
@@ -64,7 +65,8 @@ namespace offaxis
             if (parameter[offaxxillCp::Rin] < 0.0)
                 param[offaxconv::Rin] = -parameter[offaxxillCp::Rin] * rms(parameter[offaxxillCp::a_spin]);
 
-            static Cache corona(offaxis, envs::cache_size());
+            static Memory corona(offaxis);
+            corona.max_size = envs::cache_size();
             const Emission emission(corona(param, envs::nside(), relxill::n_incl(prim_type)));
 
             const relxill::Spectrum spectrum(parameter, prim_type);
@@ -98,8 +100,8 @@ namespace offaxis
                 return;
             }
 
-            if (envs::table.count(80) == 0)
-                envs::table.try_emplace(80, envs::kydir());
+            // if (envs::table.count(80) == 0)
+            //     envs::table.try_emplace(80, envs::kydir());
 
             omp_set_num_threads(envs::nthreads());
 

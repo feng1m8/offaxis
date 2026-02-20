@@ -24,6 +24,8 @@ namespace offaxis
 
     namespace envs
     {
+        long nside();
+
         inline std::map<long, const Sphere> sphere;
     }
 }

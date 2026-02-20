@@ -1,8 +1,8 @@
 #ifndef OFFAXIS_HISTOGRAM_HXX
 #define OFFAXIS_HISTOGRAM_HXX
 
-#include <string_view>
 #include <valarray>
+#include <vector>
 
 #include <gsl/gsl_histogram.h>
 
@@ -14,13 +14,13 @@ namespace offaxis
         gsl_histogram *hist;
 
     public:
-        Histogram(const std::valarray<double> &range)
-        {
-            this->hist = gsl_histogram_alloc(range.size() - 1);
-            gsl_histogram_set_ranges(this->hist, std::begin(range), range.size());
-        }
+        // Histogram(const std::valarray<double> &range)
+        // {
+        //     this->hist = gsl_histogram_alloc(range.size() - 1);
+        //     gsl_histogram_set_ranges(this->hist, std::begin(range), range.size());
+        // }
 
-        Histogram(std::basic_string_view<double> range)
+        Histogram(const std::vector<double> &range)
         {
             this->hist = gsl_histogram_alloc(range.size() - 1);
             gsl_histogram_set_ranges(this->hist, range.data(), range.size());

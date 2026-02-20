@@ -1,7 +1,7 @@
 #include <functional>
 #include <memory>
 
-#include "offaxis/convolve/convolve.hxx"
+#include "offaxline/convolve/convolve.hxx"
 #include "offaxis/parameter.hxx"
 #include "spectrum.hxx"
 
@@ -68,7 +68,7 @@ namespace offaxis::relxill
 
         double prim_spec_source[N_ENER_COARSE];
         calc_primary_spectrum(prim_spec_source, std::begin(energy_norm), N_ENER_COARSE, &this->parameter, &status);
-        double norm = 2.0 / calcNormWrtXillverTableSpec(prim_spec_source, std::begin(energy_norm), N_ENER_COARSE, nullptr);
+        double norm = 2.0 / calcXillverNormFromPrimarySpectrum(prim_spec_source, std::begin(energy_norm), N_ENER_COARSE, nullptr);
 
         std::valarray<double> flux(ener.size() - 1);
         calc_primary_spectrum(std::begin(flux), std::begin(ener), flux.size(), &this->parameter, &status, ener_shift_source_obs);

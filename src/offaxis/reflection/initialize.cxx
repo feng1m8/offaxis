@@ -1,4 +1,4 @@
-#include "offaxis/envs.hxx"
+#include "offaxline/envs.hxx"
 
 extern "C"
 {
@@ -58,10 +58,10 @@ namespace offaxis::relxill
         throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), fp.string());
     }
 
-    static const int initialize = []()
-    {
-        getFullPathTableName = get_full_path_table_name;
-        version_number_printed = 1;
-        return 0;
-    }();
+    // static const int initialize = []()
+    // {
+    //     getFullPathTableName = get_full_path_table_name;
+    //     version_number_printed = 1;
+    //     return 0;
+    // }();
 }

@@ -1,9 +1,8 @@
 #ifndef OFFAXIS_ENVS_HXX
 #define OFFAXIS_ENVS_HXX
 
+#include <cmath>
 #include <filesystem>
-
-#include <math.h>
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832
@@ -18,14 +17,18 @@ namespace offaxis
             return M_PI / 180.0 * degree;
         }
 
+        inline double mod(double x1, double x2)
+        {
+            return x1 - x2 * std::floor(x1 / x2);
+        }
+
         std::filesystem::path abspath();
+        std::string fotmat(const char *format, ...);
     }
 
     namespace envs
     {
         int nthreads();
-        long nside();
-        std::filesystem::path kydir();
     }
 }
 
