@@ -32,18 +32,18 @@ namespace offaxis::relxill
 
         spec->xill_spec = new xillSpec *[1];
 
-        spec->fft_xill[1] = new double *[2];
-        spec->fft_rel[1] = new double *[2];
+        spec->fft_xill[0] = new double *[2];
+        spec->fft_rel[0] = new double *[2];
 
-        spec->fftw_xill[1] = fftw_alloc_complex(N_ENER_CONV);
-        spec->fftw_rel[1] = fftw_alloc_complex(N_ENER_CONV);
+        spec->fftw_xill[0] = fftw_alloc_complex(N_ENER_CONV);
+        spec->fftw_rel[0] = fftw_alloc_complex(N_ENER_CONV);
 
         for (int jj = 0; jj < 2; jj++)
         {
-            spec->fft_xill[1][jj] = new double[N_ENER_CONV];
-            spec->fft_rel[1][jj] = new double[N_ENER_CONV];
+            spec->fft_xill[0][jj] = new double[N_ENER_CONV];
+            spec->fft_rel[0][jj] = new double[N_ENER_CONV];
         }
-        spec->xill_spec[1] = nullptr;
+        spec->xill_spec[0] = nullptr;
 
         spec->out_spec = nullptr;
 

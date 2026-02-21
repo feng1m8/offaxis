@@ -22,6 +22,7 @@ namespace offaxis
         param[offaxline::rlp] = parameter[rlp];
         param[offaxline::thetalp] = parameter[thetalp];
         param[offaxline::philp] = parameter[philp];
+        param[offaxline::vr] = parameter[vr];
         param[offaxline::vtheta] = parameter[vtheta];
         param[offaxline::vphi] = parameter[vphi];
         param[offaxline::a_spin] = parameter[a_spin];
