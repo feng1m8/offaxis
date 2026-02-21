@@ -37,11 +37,11 @@ add_library(
     "src/offaxis/offaxline/sphere.cxx"
     "src/offaxis/offaxconv/convolve.cxx"
     "src/offaxis/offaxconv/offaxconv.cxx"
-    "src/offaxis/reflection/spectrum.cxx"
-    "src/offaxis/reflection/offaxxill.cxx"
-    "src/offaxis/reflection/primary.cxx"
-    "src/offaxis/reflection/initialize.cxx"
-    "src/offaxis/reflection/emission.cxx"
+    "src/offaxis/offaxxill/spectrum.cxx"
+    "src/offaxis/offaxxill/offaxxill.cxx"
+    "src/offaxis/offaxxill/primary.cxx"
+    "src/offaxis/offaxxill/initialize.cxx"
+    "src/offaxis/offaxxill/emission.cxx"
     "src/offaxis/xspecmodel/xspecmodel.cxx"
 )
 
@@ -90,7 +90,8 @@ target_link_libraries("offaxis" PRIVATE "offaxis_cxx")
 
 install(
     TARGETS "offaxis_cxx"
-    DESTINATION "offaxis"
+    RUNTIME DESTINATION "offaxis"
+    LIBRARY DESTINATION "offaxis"
 )
 
 install(
@@ -99,8 +100,8 @@ install(
 )
 
 install(
-    FILES "offaxis/__init__.py"
-    FILES "offaxis/initpackage.py"
-    FILES "offaxis/offaxis.dat"
+    FILES "python/__init__.py"
+    FILES "python/initpackage.py"
+    FILES "python/offaxis.dat"
     DESTINATION "offaxis"
 )
