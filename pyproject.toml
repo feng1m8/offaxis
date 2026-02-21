@@ -22,8 +22,8 @@ license = "GPL-3.0-or-later"
 license-files = [
     "LICENSE", 
     "src/relxill/LICENSE", 
-    "subprojects/YNOGK-CXX/LICENSE", 
-    "subprojects/YNOGK-CXX/YNOGK/LICENSE"
+    "src/YNOGK-CXX/LICENSE", 
+    "src/YNOGK-CXX/YNOGK/LICENSE"
 ]
 
 [build-system.meson-python]

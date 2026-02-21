@@ -18,7 +18,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory("src/relxill" EXCLUDE_FROM_ALL)
-add_subdirectory("subprojects/YNOGK-CXX" EXCLUDE_FROM_ALL)
+add_subdirectory("src/YNOGK-CXX" EXCLUDE_FROM_ALL)
 
 find_library(DL dl REQUIRED)
 find_package(OpenMP REQUIRED)
