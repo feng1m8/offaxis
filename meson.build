@@ -6,8 +6,8 @@ project(
     license_files: [
         'LICENSE',
         'src/relxill/LICENSE',
-        'subprojects/YNOGK-CXX/LICENSE',
-        'subprojects/YNOGK-CXX/YNOGK/LICENSE',
+        'src/YNOGK-CXX/LICENSE',
+        'src/YNOGK-CXX/YNOGK/LICENSE',
     ],
     default_options: {
         'b_lto': true,
@@ -16,6 +16,7 @@ project(
         'cpp_std': 'c++17',
         'c_std': 'c11',
     },
+    subproject_dir: 'src',
 )
 
 python = import('python').find_installation(pure: false)

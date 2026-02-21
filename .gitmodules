@@ -1,5 +1,5 @@
-[submodule "subprojects/YNOGK-CXX"]
-	path = subprojects/YNOGK-CXX
+[submodule "src/YNOGK-CXX"]
+	path = src/YNOGK-CXX
 	url = https://github.com/feng1m8/YNOGK-CXX.git
 	branch = main
 [submodule "src/relxill"]
