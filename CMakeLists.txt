@@ -30,11 +30,11 @@ pkg_check_modules(chealpix REQUIRED IMPORTED_TARGET chealpix)
 
 add_library(
     "offaxis_cxx" SHARED
-    "src/offaxis/envs.cxx"
-    "src/offaxis/kbhtables.cxx"
-    "src/offaxis/offaxline.cxx"
-    "src/offaxis/raytracing.cxx"
-    "src/offaxis/sphere.cxx"
+    "src/offaxis/offaxline/envs.cxx"
+    "src/offaxis/offaxline/kbhtables.cxx"
+    "src/offaxis/offaxline/offaxline.cxx"
+    "src/offaxis/offaxline/raytracing.cxx"
+    "src/offaxis/offaxline/sphere.cxx"
     "src/offaxis/convolve/convolve.cxx"
     "src/offaxis/convolve/offaxconv.cxx"
     "src/offaxis/reflection/spectrum.cxx"
@@ -48,6 +48,7 @@ add_library(
 target_include_directories(
     "offaxis_cxx"
     PRIVATE "src"
+    PRIVATE "src/offaxis"
     PUBLIC "include"
 )
 

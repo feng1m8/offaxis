@@ -1,7 +1,7 @@
 #include <functional>
 #include <memory>
 
-#include "offaxline/convolve/convolve.hxx"
+#include "convolve/convolve.hxx"
 #include "offaxis/parameter.hxx"
 #include "spectrum.hxx"
 

@@ -10,18 +10,30 @@ requires = [
 cmake.args = ["-GNinja"]
 ninja.make-fallback = false
 wheel.py-api = "cp38"
-wheel.license-files = ["LICENSE", "src/relxill/LICENSE", "subprojects/YNOGK-CXX/LICENSE", "subprojects/YNOGK-CXX/YNOGK/LICENSE"]
+metadata.version.provider = "scikit_build_core.metadata.regex"
+metadata.version.input = "CMakeLists.txt"
+metadata.version.regex = "VERSION \"(?P<value>[0-9]+(\\.[0-9]+)*)\""
 
 [project]
 name = "offaxis"
-version = "1.0.1"
+dynamic = ["version"]
 requires-python = ">=3.8"
-classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-  "Programming Language :: C++",
-  "Programming Language :: C",
-  "Programming Language :: Cython",
-  "Topic :: Scientific/Engineering :: Astronomy",
+license = "GPL-3.0-or-later"
+license-files = [
+    "LICENSE", 
+    "src/relxill/LICENSE", 
+    "subprojects/YNOGK-CXX/LICENSE", 
+    "subprojects/YNOGK-CXX/YNOGK/LICENSE"
 ]
+
+[build-system.meson-python]
+build-backend = "mesonpy"
+requires = [
+    "meson-python",
+    "meson >= 1.6.0",
+    "cython",
+]
+
+[tool.meson-python]
+args.install = ['--tags=runtime']
+limited-api = true
