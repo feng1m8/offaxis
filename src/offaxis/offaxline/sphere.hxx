@@ -1,5 +1,5 @@
-#ifndef OFFAXIS_SPHERE_HXX
-#define OFFAXIS_SPHERE_HXX
+#ifndef OFFAXLINE_SPHERE_HXX
+#define OFFAXLINE_SPHERE_HXX
 
 #include <map>
 #include <vector>

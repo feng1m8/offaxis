@@ -1,5 +1,5 @@
-#ifndef OFFAXIS_KYN_HXX
-#define OFFAXIS_KYN_HXX
+#ifndef OFFAXLINE_KBHTABLES_HXX
+#define OFFAXLINE_KBHTABLES_HXX
 
 #include <filesystem>
 #include <map>

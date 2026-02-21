@@ -1,5 +1,5 @@
-#ifndef OFFAXIS_RAYTRACING_HXX
-#define OFFAXIS_RAYTRACING_HXX
+#ifndef OFFAXLINE_RAYTRACING_HXX
+#define OFFAXLINE_RAYTRACING_HXX
 
 #include "ynogk_cxx/particle.hxx"
 

@@ -1,13 +1,15 @@
 #include <functional>
 #include <memory>
 
+#include "relxill/src/Relbase.h"
+
 #include "convolve.hxx"
 
 void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
 
 namespace offaxis::relxill
 {
-    specCache *new_specCache()
+    static specCache *new_specCache()
     {
         auto *spec = new specCache;
 
@@ -23,23 +25,23 @@ namespace offaxis::relxill
         spec->fftw_xill = new fftw_complex *[1];
         spec->fftw_rel = new fftw_complex *[1];
 
-        spec->fftw_backwards_input = fftw_alloc_complex(spec->n_ener);
-        spec->fftw_output = new double[spec->n_ener];
+        spec->fftw_backwards_input = fftw_alloc_complex(N_ENER_CONV);
+        spec->fftw_output = new double[N_ENER_CONV];
 
-        spec->plan_c2r = fftw_plan_dft_c2r_1d(spec->n_ener, spec->fftw_backwards_input, spec->fftw_output, FFTW_ESTIMATE);
+        spec->plan_c2r = fftw_plan_dft_c2r_1d(N_ENER_CONV, spec->fftw_backwards_input, spec->fftw_output, FFTW_ESTIMATE);
 
         spec->xill_spec = new xillSpec *[1];
 
         spec->fft_xill[1] = new double *[2];
         spec->fft_rel[1] = new double *[2];
 
-        spec->fftw_xill[1] = fftw_alloc_complex(spec->n_ener);
-        spec->fftw_rel[1] = fftw_alloc_complex(spec->n_ener);
+        spec->fftw_xill[1] = fftw_alloc_complex(N_ENER_CONV);
+        spec->fftw_rel[1] = fftw_alloc_complex(N_ENER_CONV);
 
         for (int jj = 0; jj < 2; jj++)
         {
-            spec->fft_xill[1][jj] = new double[spec->n_ener];
-            spec->fft_rel[1][jj] = new double[spec->n_ener];
+            spec->fft_xill[1][jj] = new double[N_ENER_CONV];
+            spec->fft_rel[1][jj] = new double[N_ENER_CONV];
         }
         spec->xill_spec[1] = nullptr;
 

@@ -1,9 +1,9 @@
-#ifndef OFFAXIS_CONVOLVE_CONVOLVE_HXX
-#define OFFAXIS_CONVOLVE_CONVOLVE_HXX
+#ifndef OFFAXCONV_CONVOLVE_HXX
+#define OFFAXCONV_CONVOLVE_HXX
 
 #include <valarray>
 
-#include "relxill/src/Relbase.h"
+#include "relxill/src/Xillspec.h"
 
 namespace offaxis
 {

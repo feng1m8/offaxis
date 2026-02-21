@@ -1,5 +1,5 @@
-#ifndef OFFAXIS_ENVS_HXX
-#define OFFAXIS_ENVS_HXX
+#ifndef OFFAXLINE_ENVS_HXX
+#define OFFAXLINE_ENVS_HXX
 
 #include <cmath>
 #include <filesystem>

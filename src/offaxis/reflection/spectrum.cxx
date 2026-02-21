@@ -1,7 +1,9 @@
 #include <functional>
 #include <memory>
 
-#include "convolve/convolve.hxx"
+#include "relxill/src/ModelDefinition.h"
+
+#include "offaxconv/convolve.hxx"
 #include "offaxis/parameter.hxx"
 #include "spectrum.hxx"
 
