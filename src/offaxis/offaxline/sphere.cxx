@@ -2,7 +2,7 @@
 
 #include <chealpix.h>
 
-#include "sphere.hxx"
+#include "offaxline/sphere.hxx"
 
 namespace offaxis
 {

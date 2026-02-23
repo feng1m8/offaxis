@@ -2,6 +2,7 @@
 #define OFFAXIS_REFLECTION_SPECTRUM_HXX
 
 #include <valarray>
+#include <vector>
 
 #include "relxill/src/ModelInfo.h"
 
@@ -10,34 +11,31 @@ extern "C"
 #include "relxill/src/common.h"
 }
 
-namespace offaxis::relxill
+namespace offaxis
 {
-    int n_incl(T_PrimSpec prim_type);
-
-    class Spectrum
+    namespace offaxxillver
     {
-    public:
-        struct Spec
+        class Emission;
+    }
+
+    namespace relxill
+    {
+        int n_incl(T_PrimSpec prim_type);
+
+        class Spectrum
         {
-            std::valarray<double> energy;
-            std::valarray<double> flux;
+        public:
+            Spectrum(const std::vector<double> &energy, const std::vector<double> &parameter, T_PrimSpec prim_type);
+
+            std::valarray<double> convolve(const offaxis::offaxxillver::Emission &emission) const;
+
+            std::valarray<double> primary(const std::vector<double> &parameter) const;
+
+        private:
+            const std::vector<double> &energy;
+            xillTableParam parameter;
         };
-
-        Spectrum(const std::valarray<double> &parameter, T_PrimSpec prim_type);
-
-        Spectrum operator*(double ener_shift_observer_source) const;
-
-        Spec xillver(const std::valarray<double> &energy, const std::valarray<double> &dist) const;
-
-        std::valarray<double> convolve(Spec& xill_spec,const std::valarray<double> &energy, const std::valarray<double> &hist) const;
-
-        std::valarray<double> primary(const std::valarray<double> &ener, double ener_shift_source_obs) const;
-
-        double norm;
-
-    private:
-        xillTableParam parameter;
-    };
+    }
 }
 
 #endif

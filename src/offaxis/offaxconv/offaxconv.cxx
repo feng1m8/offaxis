@@ -1,9 +1,7 @@
+#include "offaxconv/convolve.hxx"
 #include "offaxis/offaxis.h"
 #include "offaxis/parameter.hxx"
-
 #include "offaxline/envs.hxx"
-
-#include "convolve.hxx"
 
 namespace offaxis
 {

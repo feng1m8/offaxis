@@ -3,7 +3,7 @@
 
 #include "relxill/src/Relbase.h"
 
-#include "convolve.hxx"
+#include "offaxconv/convolve.hxx"
 
 void set_flux_outside_defined_range_to_zero(const double *ener, double *spec, int n_ener, double emin, double emax);
 
@@ -50,7 +50,7 @@ namespace offaxis::relxill
         return spec;
     }
 
-    void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0)
+    void convolveSpectrumFFTNormalized(const std::vector<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0)
     {
         int status = EXIT_SUCCESS;
 
@@ -62,12 +62,12 @@ namespace offaxis::relxill
         convolveSpectrumFFTNormalized(std::begin(envs::energy_conv), fxill, std::begin(frel), fout, N_ENER_CONV, 1, 1, 0, spec_cache.get(), &status);
 
         flu0.resize(ener.size() - 1);
-        _rebin_spectrum(std::begin(ener), std::begin(flu0), flu0.size(), std::begin(envs::energy_conv), fout, N_ENER_CONV);
+        _rebin_spectrum(ener.data(), std::begin(flu0), flu0.size(), std::begin(envs::energy_conv), fout, N_ENER_CONV);
     }
 
     void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, std::valarray<double> &flu0)
     {
-        convolveSpectrumFFTNormalized(ener, frel, ener, flu0);
+        convolveSpectrumFFTNormalized({std::begin(ener), std::end(ener)}, frel, ener, flu0);
         set_flux_outside_defined_range_to_zero(std::begin(ener), std::begin(flu0), flu0.size(), RELCONV_EMIN, RELCONV_EMAX);
     }
 }

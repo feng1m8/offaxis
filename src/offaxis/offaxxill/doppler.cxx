@@ -1,15 +1,17 @@
+#include <tuple>
+#include <valarray>
+
 #include <omp.h>
 
-#include "offaxis/parameter.hxx"
 #include "ynogk_cxx/particle.hxx"
+
+#include "offaxis/parameter.hxx"
 
 #include "offaxline/envs.hxx"
 #include "offaxline/memory.hxx"
 #include "offaxline/sphere.hxx"
 
-#include "spectrum.hxx"
-
-namespace offaxis::offaxxillver
+namespace offaxis
 {
     double doppler(double coslp, double sinlp, double philp, const double *vlp, double incl)
     {
@@ -17,21 +19,24 @@ namespace offaxis::offaxxillver
         double sinphi = std::sin(phi2rad);
         double cosphi = std::cos(phi2rad);
 
-        std::valarray<double> X{sinlp * cosphi, coslp * cosphi, -sinphi};
-        std::valarray<double> Z{coslp, -sinlp, 0.0};
+        std::valarray X{sinlp * cosphi, coslp * cosphi, -sinphi};
+        std::valarray Z{coslp, -sinlp, 0.0};
 
         double incl2rad = utils::deg2rad(incl);
-        std::valarray<double> obs{std::sin(incl2rad), 0.0, std::cos(incl2rad)};
+        std::valarray obs{std::sin(incl2rad), 0.0, std::cos(incl2rad)};
 
-        std::valarray<double> k(obs[0] * X + obs[2] * Z);
+        std::valarray k(obs[0] * X + obs[2] * Z);
 
-        return std::sqrt(1.0 - vlp[0] * vlp[0] - vlp[1] * vlp[1] - vlp[2] * vlp[2]) / (1.0 - vlp[0] * k[0] - vlp[1] * k[1] - vlp[2] * k[2]);
+        double v_sq = vlp[0] * vlp[0] + vlp[1] * vlp[1] + vlp[2] * vlp[2];
+        double v_cos = vlp[0] * k[0] + vlp[1] * k[1] + vlp[2] * k[2];
+
+        return std::sqrt(1.0 - v_sq) / (1.0 - v_cos);
     }
 
-    double redshiftinf(double rlp, double coslp, double sinlp, double a_spin)
+    double expnu(double rlp, double coslp, double sinlp, double a_spin)
     {
-        double expnu, temp;
-        metricgij(rlp, coslp, sinlp, a_spin, &temp, &expnu, &temp, &temp, &temp);
+        double expnu, ignore;
+        metricgij(rlp, coslp, sinlp, a_spin, &ignore, &expnu, &ignore, &ignore, &ignore);
         return expnu;
     }
 
@@ -61,7 +66,7 @@ namespace offaxis::offaxxillver
         return static_cast<double>(to_inf) / static_cast<double>(sphere.size);
     }
 
-    std::valarray<double> primary(const std::valarray<double> &energy, const std::valarray<double> &parameter, T_PrimSpec prim_type)
+    std::tuple<double, double> beaming(const std::vector<double> &parameter)
     {
         using namespace parameter::offaxxillCp;
 
@@ -70,9 +75,7 @@ namespace offaxis::offaxxillver
         double sinlp = std::sin(theta2rad);
 
         double dinf = doppler(coslp, sinlp, parameter[philp], &parameter[vr], parameter[Incl]);
-        double ginf = dinf * redshiftinf(parameter[rlp], coslp, sinlp, parameter[a_spin]);
-
-        const relxill::Spectrum spectrum(parameter, prim_type);
+        double ginf = dinf * expnu(parameter[rlp], coslp, sinlp, parameter[a_spin]);
 
         static Memory to_inf(to_infinity);
         to_inf.max_size = envs::cache_size();
@@ -80,6 +83,6 @@ namespace offaxis::offaxxillver
         double f_prim = to_inf(parameter[a_spin], parameter[rlp], parameter[thetalp], envs::nside() / 2);
         double beaming = dinf * dinf * std::pow(ginf, parameter[gamma]);
 
-        return f_prim * beaming * spectrum.primary(energy, ginf);
+        return {ginf, f_prim * beaming};
     }
 }

@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "raytracing.hxx"
+#include "offaxline/raytracing.hxx"
 
 namespace offaxis
 {

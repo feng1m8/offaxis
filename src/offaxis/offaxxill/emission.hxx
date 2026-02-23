@@ -11,23 +11,23 @@ namespace offaxis::offaxxillver
         double f_refl;
         std::vector<double> glp;
         std::vector<std::valarray<double>> hist;
-        std::vector<std::valarray<double>> dist;
+        std::vector<std::vector<double>> dist;
     };
 
     class Histogram
     {
     public:
-        Histogram(int n_incl, std::size_t size)
+        Histogram(std::size_t max_size, int n_incl)
         {
             this->to_disk = 0;
             this->to_infinity = 0;
-            this->itot = 0.0;
+            this->i_total = 0.0;
             this->n_incl = n_incl;
-            this->size = size;
-            this->data.reserve(size);
+            this->max_size = max_size;
+            this->data.reserve(max_size);
         }
 
-        void accumulate(double gobs, double iobs, double cosem, double glp);
+        void accumulate(double gobs, double iobs, double glp, double cosem);
 
         void operator+=(const Histogram &rhs);
 
@@ -39,10 +39,10 @@ namespace offaxis::offaxxillver
     private:
         struct Data
         {
-            std::size_t gobs;
-            double iobs;
-            std::size_t cosem;
             double glp;
+            double iobs;
+            std::size_t gobs;
+            std::size_t cosem;
 
             bool operator<(const Data &rhs) const
             {
@@ -50,10 +50,10 @@ namespace offaxis::offaxxillver
             }
         };
 
-        double itot;
+        double i_total;
         std::vector<Data> data;
         int n_incl;
-        std::size_t size;
+        std::size_t max_size;
     };
 }
 

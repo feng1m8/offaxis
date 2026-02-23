@@ -39,7 +39,7 @@ add_library(
     "src/offaxis/offaxconv/offaxconv.cxx"
     "src/offaxis/offaxxill/spectrum.cxx"
     "src/offaxis/offaxxill/offaxxill.cxx"
-    "src/offaxis/offaxxill/primary.cxx"
+    "src/offaxis/offaxxill/doppler.cxx"
     "src/offaxis/offaxxill/initialize.cxx"
     "src/offaxis/offaxxill/emission.cxx"
     "src/offaxis/xspecmodel/xspecmodel.cxx"

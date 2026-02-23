@@ -1,9 +1,9 @@
 #include <CCfits/CCfits>
 #include <filesystem>
 
-#include "envs.hxx"
-#include "kbhtables.hxx"
-#include "raytracing.hxx"
+#include "offaxline/envs.hxx"
+#include "offaxline/kbhtables.hxx"
+#include "offaxline/raytracing.hxx"
 
 namespace offaxis
 {

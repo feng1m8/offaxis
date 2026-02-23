@@ -2,6 +2,7 @@
 #define OFFAXCONV_CONVOLVE_HXX
 
 #include <valarray>
+#include <vector>
 
 #include "relxill/src/Xillspec.h"
 
@@ -27,7 +28,7 @@ namespace offaxis
 
     namespace relxill
     {
-        void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0);
+        void convolveSpectrumFFTNormalized(const std::vector<double> &ener, const std::valarray<double> &frel, const std::valarray<double> &ener0, std::valarray<double> &flu0);
         void convolveSpectrumFFTNormalized(const std::valarray<double> &ener, const std::valarray<double> &frel, std::valarray<double> &flu0);
     }
 }
