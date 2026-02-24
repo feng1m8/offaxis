@@ -1,5 +1,5 @@
-#ifndef OFFAXIS_REFLECTION_SPECTRUM_HXX
-#define OFFAXIS_REFLECTION_SPECTRUM_HXX
+#ifndef OFFAXXILL_SPECTRUM_HXX
+#define OFFAXXILL_SPECTRUM_HXX
 
 #include <valarray>
 #include <vector>
@@ -27,7 +27,7 @@ namespace offaxis
         public:
             Spectrum(const std::vector<double> &energy, const std::vector<double> &parameter, T_PrimSpec prim_type);
 
-            std::valarray<double> convolve(const offaxis::offaxxillver::Emission &emission) const;
+            std::valarray<double> convolve(const offaxxillver::Emission &emission) const;
 
             std::valarray<double> primary(const std::vector<double> &parameter) const;
 

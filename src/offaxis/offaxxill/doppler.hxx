@@ -1,14 +1,13 @@
-#ifndef OFFAXIS_REFLECTION_PRIMARY_HXX
-#define OFFAXIS_REFLECTION_PRIMARY_HXX
+#ifndef OFFAXXILL_DOPPLER_HXX
+#define OFFAXXILL_DOPPLER_HXX
 
+#include <valarray>
 #include <vector>
 
 namespace offaxis
 {
-    double doppler(double coslp, double sinlp, double philp, const double *vlp, double incl);
-    double expnu(double rlp, double coslp, double sinlp, double a_spin);
-
-    std::tuple<double, double> beaming(const std::vector<double> &parameter);
+    double redshift_primary(const std::valarray<double> &parameter);
+    std::tuple<double, double> doppler_primary(const std::vector<double> &parameter);
 }
 
 #endif

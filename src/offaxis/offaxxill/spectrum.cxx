@@ -11,16 +11,6 @@
 
 namespace offaxis::relxill
 {
-    int n_incl(T_PrimSpec prim_type)
-    {
-        int status = EXIT_SUCCESS;
-
-        xillTable *tab = nullptr;
-        get_init_xillver_table(&tab, MOD_TYPE_RELXILLLP, convertPrimSpecType(prim_type), &status);
-
-        return tab->n_incl;
-    }
-
     static std::tuple<std::valarray<double>, std::valarray<double>> calc_xillver_angdep(const xillTableParam &parameter, const std::vector<double> &dist)
     {
         int status = EXIT_SUCCESS;
@@ -37,7 +27,7 @@ namespace offaxis::relxill
 
     static std::valarray<double> get_observed_primary_spectrum(const std::vector<double> &energy, const xillTableParam &parameter, double ener_shift_source_obs)
     {
-        static const std::valarray<double> energy_norm(utils::geomspace(EMIN_XILLVER_NORMALIZATION, EMAX_XILLVER_NORMALIZATION, N_ENER_COARSE + 1));
+        static const std::valarray energy_norm(utils::geomspace(EMIN_XILLVER_NORMALIZATION, EMAX_XILLVER_NORMALIZATION, N_ENER_COARSE + 1));
 
         int status = EXIT_SUCCESS;
 
@@ -88,7 +78,7 @@ namespace offaxis::relxill
 
     std::valarray<double> Spectrum::primary(const std::vector<double> &parameter) const
     {
-        auto [gobs, iobs] = beaming(parameter);
+        auto [gobs, iobs] = doppler_primary(parameter);
 
         std::valarray flux(get_observed_primary_spectrum(this->energy, this->parameter, gobs));
 

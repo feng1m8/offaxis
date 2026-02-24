@@ -1,4 +1,3 @@
-#include <tuple>
 #include <valarray>
 
 #include <omp.h>
@@ -6,14 +5,13 @@
 #include "ynogk_cxx/particle.hxx"
 
 #include "offaxis/parameter.hxx"
-
 #include "offaxline/envs.hxx"
 #include "offaxline/memory.hxx"
 #include "offaxline/sphere.hxx"
 
 namespace offaxis
 {
-    double doppler(double coslp, double sinlp, double philp, const double *vlp, double incl)
+    static double doppler(double coslp, double sinlp, double philp, const double *vlp, double incl)
     {
         double phi2rad = utils::deg2rad(philp);
         double sinphi = std::sin(phi2rad);
@@ -33,7 +31,7 @@ namespace offaxis
         return std::sqrt(1.0 - v_sq) / (1.0 - v_cos);
     }
 
-    double expnu(double rlp, double coslp, double sinlp, double a_spin)
+    static double expnu(double rlp, double coslp, double sinlp, double a_spin)
     {
         double expnu, ignore;
         metricgij(rlp, coslp, sinlp, a_spin, &ignore, &expnu, &ignore, &ignore, &ignore);
@@ -66,9 +64,23 @@ namespace offaxis
         return static_cast<double>(to_inf) / static_cast<double>(sphere.size);
     }
 
-    std::tuple<double, double> beaming(const std::vector<double> &parameter)
+    double redshift_primary(const std::valarray<double> &parameter)
     {
-        using namespace parameter::offaxxillCp;
+        using namespace parameter::offaxconv;
+
+        double theta2rad = utils::deg2rad(parameter[thetalp]);
+        double coslp = std::cos(theta2rad);
+        double sinlp = std::sin(theta2rad);
+
+        double dinf = doppler(coslp, sinlp, parameter[philp], &parameter[vr], parameter[Incl]);
+        double ginf = dinf * expnu(parameter[rlp], coslp, sinlp, parameter[a_spin]);
+
+        return ginf;
+    }
+
+    std::tuple<double, double> doppler_primary(const std::vector<double> &parameter)
+    {
+        using namespace parameter::offaxconv;
 
         double theta2rad = utils::deg2rad(parameter[thetalp]);
         double coslp = std::cos(theta2rad);

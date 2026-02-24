@@ -23,7 +23,7 @@ namespace offaxis
 
     namespace envs
     {
-        inline const std::valarray<double> energy_conv(utils::geomspace(EMIN_RELXILL_CONV, EMAX_RELXILL_CONV, N_ENER_CONV + 1));
+        inline const std::valarray energy_conv(utils::geomspace(EMIN_RELXILL_CONV, EMAX_RELXILL_CONV, N_ENER_CONV + 1));
     }
 
     namespace relxill

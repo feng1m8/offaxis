@@ -6,6 +6,14 @@
 
 namespace offaxis::offaxxillver
 {
+    Histogram::Histogram(std::size_t max_size, int n_incl) : max_size(max_size), n_incl(n_incl)
+    {
+        this->data.reserve(max_size);
+        this->i_total = 0.0;
+        this->to_disk = 0;
+        this->to_infinity = 0;
+    }
+
     void Histogram::accumulate(double gobs, double iobs, double glp, double cosem)
     {
         static const double STEP = N_ENER_CONV / std::log(EMAX_RELXILL_CONV / EMIN_RELXILL_CONV);

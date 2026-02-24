@@ -15,24 +15,24 @@ namespace offaxis
             throw std::out_of_range(utils::fotmat("RealArray index %zu is out of bounds with size %zu.", Nparams - 1, parameter.size()));
         }
 
-        std::valarray<double> param(offaxline::Nparams);
-        param[offaxline::lineE] = 1.0;
-        param[offaxline::rlp] = parameter[rlp];
-        param[offaxline::thetalp] = parameter[thetalp];
-        param[offaxline::philp] = parameter[philp];
-        param[offaxline::vr] = parameter[vr];
-        param[offaxline::vtheta] = parameter[vtheta];
-        param[offaxline::vphi] = parameter[vphi];
-        param[offaxline::a_spin] = parameter[a_spin];
-        param[offaxline::Incl] = parameter[Incl];
-        param[offaxline::Rin] = parameter[Rin];
-        param[offaxline::Rout] = parameter[Rout];
-        param[offaxline::gamma] = parameter[gamma];
-        param[offaxline::zshift] = 0.0;
-        param[offaxline::normtype] = parameter[normtype];
+        std::valarray<double> params(offaxline::Nparams);
+        params[offaxline::lineE] = 1.0;
+        params[offaxline::rlp] = parameter[rlp];
+        params[offaxline::thetalp] = parameter[thetalp];
+        params[offaxline::philp] = parameter[philp];
+        params[offaxline::vr] = parameter[vr];
+        params[offaxline::vtheta] = parameter[vtheta];
+        params[offaxline::vphi] = parameter[vphi];
+        params[offaxline::a_spin] = parameter[a_spin];
+        params[offaxline::Incl] = parameter[Incl];
+        params[offaxline::Rin] = parameter[Rin];
+        params[offaxline::Rout] = parameter[Rout];
+        params[offaxline::gamma] = parameter[gamma];
+        params[offaxline::zshift] = 0.0;
+        params[offaxline::normtype] = parameter[normtype];
 
         std::valarray<double> line;
-        offaxis::offaxline(envs::energy_conv, param, line);
+        offaxis::offaxline(envs::energy_conv, params, line);
 
         relxill::convolveSpectrumFFTNormalized(energy, line, flux);
     }

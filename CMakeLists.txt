@@ -40,9 +40,9 @@ add_library(
     "src/offaxis/offaxxill/spectrum.cxx"
     "src/offaxis/offaxxill/offaxxill.cxx"
     "src/offaxis/offaxxill/doppler.cxx"
-    "src/offaxis/offaxxill/initialize.cxx"
+    "src/offaxis/offaxxill/xilltable.cxx"
     "src/offaxis/offaxxill/emission.cxx"
-    "src/offaxis/xspecmodel/xspecmodel.cxx"
+    "src/offaxis/xspecmodel.cxx"
 )
 
 target_include_directories(

@@ -1,4 +1,5 @@
 #include <cfenv>
+
 #include <omp.h>
 
 #include "relxill/src/Xillspec.h"
@@ -70,7 +71,7 @@ namespace offaxis
             return histogram.get();
         }
 
-        static std::valarray<double> reflection(const std::vector<double> &energy, const std::vector<double> &parameter, T_PrimSpec prim_type)
+        static std::valarray<double> offaxxillver(const std::vector<double> &energy, const std::vector<double> &parameter, T_PrimSpec prim_type)
         {
             using namespace parameter::offaxxillCp;
 
@@ -78,12 +79,19 @@ namespace offaxis
             if (parameter[Rin] < 0.0)
                 params[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 
-            static Memory corona(offaxis<false>);
-            corona.max_size = envs::cache_size();
+            static Memory offaxis_reflfrac(offaxis<false>);
+            static Memory offaxis_boost(offaxis<true>);
+
+            auto memo = &offaxis_boost;
+
+            if (parameter[switch_reflfrac_boost] == 0)
+                memo = &offaxis_reflfrac;
+
+            memo->max_size = envs::cache_size();
             long nside = envs::nside();
             std::filesystem::path kydir(envs::kydir());
 
-            const Emission emission = corona(
+            const Emission emission = (*memo)(
                 params,
                 {&envs::sphere.try_emplace(nside, nside).first->second,
                  &envs::kbhtables.try_emplace(kydir, kydir).first->second,
@@ -99,64 +107,74 @@ namespace offaxis
 
             return flux;
         }
-
-        template <T_PrimSpec prim_type>
-        static std::valarray<double> offaxxillver(const std::valarray<double> &energy, const std::valarray<double> &parameter)
-        {
-            using namespace parameter::offaxxillCp;
-
-            if (parameter.size() < Nparams)
-            {
-                throw std::out_of_range(utils::fotmat("RealArray index %zu is out of bounds with size %zu.", Nparams - 1, parameter.size()));
-            }
-
-            if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
-            {
-                std::fetestexcept(FE_INVALID);
-                return std::valarray(std::nan(""), energy.size() - 1);
-            }
-
-            std::valarray engs((1.0 + parameter[zshift]) * energy);
-
-            std::valarray<double> flux(reflection(
-                {std::begin(engs), std::end(engs)},
-                {std::begin(parameter), std::end(parameter)},
-                prim_type));
-
-            return flux;
-        };
     }
 
     [[gnu::dllexport]] void offaxxillCp(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
-        flux = offaxxillver::offaxxillver<T_PrimSpec::Nthcomp>(energy, parameter);
+        using namespace parameter::offaxxillCp;
+
+        if (parameter.size() < Nparams)
+        {
+            throw std::out_of_range(utils::fotmat("RealArray index %zu is out of bounds with size %zu.", Nparams - 1, parameter.size()));
+        }
+
+        if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
+        {
+            std::fetestexcept(FE_INVALID);
+            flux = std::valarray(std::nan(""), energy.size() - 1);
+            return;
+        }
+
+        std::valarray engs((1.0 + parameter[zshift]) * energy);
+
+        flux = offaxxillver::offaxxillver(
+            {std::begin(engs), std::end(engs)},
+            {std::begin(parameter), std::end(parameter)},
+            T_PrimSpec::Nthcomp);
     }
 
     [[gnu::dllexport]] void offaxxill(const std::valarray<double> &energy, const std::valarray<double> &parameter, std::valarray<double> &flux)
     {
         using namespace parameter;
+        using namespace parameter::offaxxill;
 
-        if (parameter.size() < offaxxill::Nparams)
+        if (parameter.size() < Nparams)
         {
-            throw std::out_of_range(utils::fotmat("RealArray index %zu is out of bounds with size %zu.", offaxxill::Nparams - 1, parameter.size()));
+            throw std::out_of_range(utils::fotmat("RealArray index %zu is out of bounds with size %zu.", Nparams - 1, parameter.size()));
         }
 
-        std::valarray<double> param(offaxxillCp::Nparams);
-        param[std::slice(offaxxillCp::rlp, offaxxillCp::logxi + 1, 1)] = parameter[std::slice(offaxxill::rlp, offaxxill::logxi + 1, 1)];
-        param[offaxxillCp::logN] = 15.0;
-        param[offaxxillCp::Afe] = parameter[offaxxill::Afe];
+        if (parameter[vr] * parameter[vr] + parameter[vtheta] * parameter[vtheta] + parameter[vphi] * parameter[vphi] >= 1.0)
+        {
+            std::fetestexcept(FE_INVALID);
+            flux = std::valarray(std::nan(""), energy.size() - 1);
+            return;
+        }
 
-        double theta2rad = utils::deg2rad(parameter[offaxxill::thetalp]);
-        double coslp = std::cos(theta2rad);
-        double sinlp = std::sin(theta2rad);
-        double dop = doppler(coslp, sinlp, parameter[offaxxill::philp], &parameter[offaxxill::vr], parameter[offaxxill::Incl]);
-        double ginf = dop * expnu(parameter[offaxxill::rlp], coslp, sinlp, parameter[offaxxill::a_spin]);
+        std::valarray engs((1.0 + parameter[zshift]) * energy);
 
-        param[offaxxillCp::Ecut] = parameter[offaxxill::Ecut] / ginf;
-        param[offaxxillCp::refl_frac] = parameter[offaxxill::refl_frac];
-        param[offaxxillCp::zshift] = parameter[offaxxill::zshift];
-        param[offaxxillCp::switch_reflfrac_boost] = parameter[offaxxill::switch_reflfrac_boost];
+        std::valarray<double> params(offaxxillCp::Nparams);
+        params[offaxxillCp::rlp] = parameter[rlp];
+        params[offaxxillCp::thetalp] = parameter[thetalp];
+        params[offaxxillCp::philp] = parameter[philp];
+        params[offaxxillCp::vr] = parameter[vr];
+        params[offaxxillCp::vtheta] = parameter[vtheta];
+        params[offaxxillCp::vphi] = parameter[vphi];
+        params[offaxxillCp::a_spin] = parameter[a_spin];
+        params[offaxxillCp::Incl] = parameter[Incl];
+        params[offaxxillCp::Rin] = parameter[Rin];
+        params[offaxxillCp::Rout] = parameter[Rout];
+        params[offaxxillCp::gamma] = parameter[gamma];
+        params[offaxxillCp::logxi] = parameter[logxi];
+        params[offaxxillCp::logN] = 15.0;
+        params[offaxxillCp::Afe] = parameter[Afe];
+        params[offaxxillCp::Ecut] = parameter[Ecut] / redshift_primary(parameter);
+        params[offaxxillCp::refl_frac] = parameter[refl_frac];
+        params[offaxxillCp::zshift] = parameter[zshift];
+        params[offaxxillCp::switch_reflfrac_boost] = parameter[switch_reflfrac_boost];
 
-        flux = offaxxillver::offaxxillver<T_PrimSpec::CutoffPl>(energy, param);
+        flux = offaxxillver::offaxxillver(
+            {std::begin(engs), std::end(engs)},
+            {std::begin(parameter), std::end(parameter)},
+            T_PrimSpec::CutoffPl);
     }
 }
