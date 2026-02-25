@@ -75,7 +75,7 @@ namespace offaxis
         {
             using namespace parameter::offaxxillCp;
 
-            std::vector params(std::begin(parameter) + rlp, gamma + 1 + std::begin(parameter));
+            std::vector<double> params(std::begin(parameter) + rlp, gamma + 1 + std::begin(parameter));
             if (parameter[Rin] < 0.0)
                 params[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 
@@ -99,7 +99,7 @@ namespace offaxis
 
             const relxill::Spectrum spectrum(energy, parameter, prim_type);
 
-            std::valarray flux(spectrum.convolve(emission));
+            std::valarray<double> flux(spectrum.convolve(emission));
             flux *= std::fabs(parameter[refl_frac]);
 
             if (parameter[refl_frac] >= 0.0)
@@ -125,7 +125,7 @@ namespace offaxis
             return;
         }
 
-        std::valarray engs((1.0 + parameter[zshift]) * energy);
+        std::valarray<double> engs((1.0 + parameter[zshift]) * energy);
 
         flux = offaxxillver::offaxxillver(
             {std::begin(engs), std::end(engs)},
@@ -150,9 +150,9 @@ namespace offaxis
             return;
         }
 
-        std::valarray engs((1.0 + parameter[zshift]) * energy);
+        std::valarray<double> engs((1.0 + parameter[zshift]) * energy);
 
-        std::valarray<double> params(offaxxillCp::Nparams);
+        std::vector<double> params(offaxxillCp::Nparams);
         params[offaxxillCp::rlp] = parameter[rlp];
         params[offaxxillCp::thetalp] = parameter[thetalp];
         params[offaxxillCp::philp] = parameter[philp];
@@ -174,7 +174,6 @@ namespace offaxis
 
         flux = offaxxillver::offaxxillver(
             {std::begin(engs), std::end(engs)},
-            {std::begin(parameter), std::end(parameter)},
-            T_PrimSpec::CutoffPl);
+            params, T_PrimSpec::CutoffPl);
     }
 }

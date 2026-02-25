@@ -4,17 +4,15 @@
 #include <cmath>
 #include <filesystem>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832
-#endif
-
 namespace offaxis
 {
     namespace utils
     {
+        inline constexpr double pi = 3.141592653589793238462643383279502884;
+
         inline double deg2rad(double degree)
         {
-            return M_PI / 180.0 * degree;
+            return pi / 180.0 * degree;
         }
 
         inline double mod(double x1, double x2)

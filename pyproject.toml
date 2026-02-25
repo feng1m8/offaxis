@@ -25,15 +25,3 @@ license-files = [
     "src/YNOGK-CXX/LICENSE", 
     "src/YNOGK-CXX/YNOGK/LICENSE"
 ]
-
-[build-system.meson-python]
-build-backend = "mesonpy"
-requires = [
-    "meson-python",
-    "meson >= 1.6.0",
-    "cython",
-]
-
-[tool.meson-python]
-args.install = ['--tags=runtime']
-limited-api = true

@@ -5,7 +5,7 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 project("offaxis"
     LANGUAGES CXX
-    VERSION "2.3.1"
+    VERSION "2.6"
 )
 
 file(GENERATE OUTPUT ".gitignore" CONTENT "*")
@@ -47,7 +47,7 @@ add_library(
 
 target_include_directories(
     "offaxis_cxx"
-    PRIVATE "src"
+    PUBLIC "src"
     PRIVATE "src/offaxis"
     PUBLIC "include"
 )
@@ -55,13 +55,12 @@ target_include_directories(
 target_link_libraries(
     "offaxis_cxx"
     PRIVATE ${DL}
-    PRIVATE Relxill 
+    PRIVATE Relxill
     PRIVATE ynogk_cxx
     PRIVATE GSL::gsl
     PRIVATE OpenMP::OpenMP_CXX
     PRIVATE PkgConfig::chealpix
     PRIVATE PkgConfig::CCfits
-    INTERFACE $<TARGET_OBJECTS:ynogk_cxx>
 )
 
 find_package(
@@ -74,7 +73,7 @@ find_package(Cython MODULE REQUIRED)
 include(UseCython)
 
 cython_transpile(
-    "src/offaxis/xspecmodel/offaxis.pyx"
+    "python/offaxis.pyx"
     LANGUAGE CXX
     OUTPUT_VARIABLE offaxis_pyx
 )
@@ -102,6 +101,6 @@ install(
 install(
     FILES "python/__init__.py"
     FILES "python/initpackage.py"
-    FILES "python/offaxis.dat"
+    FILES "include/offaxis/offaxis.dat"
     DESTINATION "offaxis"
 )

@@ -64,9 +64,9 @@ namespace offaxis
             return;
         }
 
-        std::valarray engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
+        std::valarray<double> engs((1.0 + parameter[zshift]) / parameter[lineE] * energy);
 
-        std::vector params(std::begin(parameter) + rlp, gamma + 1 + std::begin(parameter));
+        std::vector<double> params(std::begin(parameter) + rlp, gamma + 1 + std::begin(parameter));
         if (parameter[Rin] < 0.0)
             params[Rin - rlp] = -parameter[Rin] * rms(parameter[a_spin]);
 

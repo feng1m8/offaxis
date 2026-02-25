@@ -181,7 +181,7 @@ namespace offaxis
     {
         double r_kerr = radius - this->r_plus;
         double phi_kerr = this->phi_a * std::log(r_kerr / (radius - this->r_minus));
-        phi_kerr = utils::mod(phi - phi_kerr + 0.5 * M_PI, 2.0 * M_PI);
+        phi_kerr = utils::mod(phi - phi_kerr + 0.5 * utils::pi, 2.0 * utils::pi);
 
         double alpha = gsl_interp2d_eval_extrap(this->spline[0], this->phi_vector.data(), this->r_vector.data(), std::begin(this->alpha), phi_kerr, r_kerr, acc[0], acc[1]);
         double beta = gsl_interp2d_eval_extrap(this->spline[1], this->phi_vector.data(), this->r_vector.data(), std::begin(this->beta), phi_kerr, r_kerr, acc[0], acc[1]);

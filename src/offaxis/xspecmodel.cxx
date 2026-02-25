@@ -5,10 +5,10 @@ template <auto F, std::size_t N>
 static void xspecmodel(const double *energy, int Nflux, const double *parameter, double *flux)
 {
     std::valarray<double> ener(energy, Nflux + 1);
-    std::valarray<double> param(parameter, N);
+    std::valarray<double> params(parameter, N);
     std::valarray<double> cflux(flux, Nflux);
 
-    F(ener, param, cflux);
+    F(ener, params, cflux);
 
     std::copy(std::begin(cflux), std::end(cflux), flux);
 }

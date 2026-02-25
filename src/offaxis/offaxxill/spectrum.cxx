@@ -27,7 +27,7 @@ namespace offaxis::relxill
 
     static std::valarray<double> get_observed_primary_spectrum(const std::vector<double> &energy, const xillTableParam &parameter, double ener_shift_source_obs)
     {
-        static const std::valarray energy_norm(utils::geomspace(EMIN_XILLVER_NORMALIZATION, EMAX_XILLVER_NORMALIZATION, N_ENER_COARSE + 1));
+        static const std::valarray<double> energy_norm(utils::geomspace(EMIN_XILLVER_NORMALIZATION, EMAX_XILLVER_NORMALIZATION, N_ENER_COARSE + 1));
 
         int status = EXIT_SUCCESS;
 
@@ -80,7 +80,7 @@ namespace offaxis::relxill
     {
         auto [gobs, iobs] = doppler_primary(parameter);
 
-        std::valarray flux(get_observed_primary_spectrum(this->energy, this->parameter, gobs));
+        std::valarray<double> flux(get_observed_primary_spectrum(this->energy, this->parameter, gobs));
 
         return iobs * flux;
     }

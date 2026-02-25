@@ -1,12 +1,8 @@
 #include "offaxline/envs.hxx"
 
-#include "relxill/src/ModelDefinition.h"
+#include "relxill/src/LocalModel.h"
 
-extern "C"
-{
-#include "relxill/src/xilltable.h"
-    extern int version_number_printed;
-}
+extern "C" int version_number_printed;
 
 namespace offaxis::relxill
 {
@@ -59,14 +55,14 @@ namespace offaxis::relxill
 
         if (prim_type == T_PrimSpec::CutoffPl)
         {
-            std::filesystem::path path(getFullPathTableName(XILLTABLE_FILENAME));
-            putenv(utils::fotmat("RELXILL_TABLE_PATH=%s", path.parent_path().c_str()).c_str());
+            std::string path(getFullPathTableName(XILLTABLE_FILENAME).parent_path().string());
+            return putenv(utils::fotmat("RELXILL_TABLE_PATH=%s", path.c_str()).c_str());
         }
 
         if (prim_type == T_PrimSpec::Nthcomp)
         {
-            std::filesystem::path path(getFullPathTableName(XILLTABLE_NTHCOMP_FILENAME));
-            putenv(utils::fotmat("RELXILL_TABLE_PATH=%s", path.parent_path().c_str()).c_str());
+            std::string path(getFullPathTableName(XILLTABLE_NTHCOMP_FILENAME).parent_path().string());
+            return putenv(utils::fotmat("RELXILL_TABLE_PATH=%s", path.c_str()).c_str());
         }
 
         return 0;
@@ -97,5 +93,13 @@ namespace offaxis::relxill
         }
 
         return 1;
+    }
+}
+
+namespace relxill
+{
+    [[gnu::dllexport]] void xspec_C_wrapper_eval_model(const std::vector<double> &energy, const std::vector<double> &parameter, std::vector<double> &flux, ModelName model_name)
+    {
+        xspec_C_wrapper_eval_model(model_name, parameter.data(), flux.data(), flux.size(), energy.data());
     }
 }

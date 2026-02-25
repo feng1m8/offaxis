@@ -17,13 +17,13 @@ namespace offaxis
         double sinphi = std::sin(phi2rad);
         double cosphi = std::cos(phi2rad);
 
-        std::valarray X{sinlp * cosphi, coslp * cosphi, -sinphi};
-        std::valarray Z{coslp, -sinlp, 0.0};
+        std::valarray<double> X{sinlp * cosphi, coslp * cosphi, -sinphi};
+        std::valarray<double> Z{coslp, -sinlp, 0.0};
 
         double incl2rad = utils::deg2rad(incl);
-        std::valarray obs{std::sin(incl2rad), 0.0, std::cos(incl2rad)};
+        std::valarray<double> obs{std::sin(incl2rad), 0.0, std::cos(incl2rad)};
 
-        std::valarray k(obs[0] * X + obs[2] * Z);
+        std::valarray<double> k(obs[0] * X + obs[2] * Z);
 
         double v_sq = vlp[0] * vlp[0] + vlp[1] * vlp[1] + vlp[2] * vlp[2];
         double v_cos = vlp[0] * k[0] + vlp[1] * k[1] + vlp[2] * k[2];
