@@ -27,9 +27,9 @@ static std::valarray<double> offaxline(const std::vector<double> &energy, const 
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram) schedule(static, 1)
     for (std::size_t pix = 0; pix < sphere.size; ++pix)
     {
-        auto palpha = sphere[pix];
+        auto [pr, ptheta, pphi] = sphere[pix];
 
-        if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
+        if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
         {
             double glp = ray.redshift();
             auto [gobs, cosem, lensing] = interp(ray->radius, ray->phi);

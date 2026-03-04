@@ -54,8 +54,8 @@ namespace offaxis
 #pragma omp parallel for firstprivate(ptcl) reduction(+ : to_inf)
         for (std::size_t pix = 0; pix < sphere.size; ++pix)
         {
-            auto palpha = sphere[pix];
-            ptcl.lambdaq(palpha[0], palpha[1], palpha[2]);
+            auto [pr, ptheta, pphi] = sphere[pix];
+            ptcl.lambdaq(pr, ptheta, pphi);
             double pem = ptcl.pemdisk(0.0, 1000.0, 0.0);
             if (pem == -1.0)
                 ++to_inf;

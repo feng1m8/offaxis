@@ -36,9 +36,9 @@ namespace offaxis
 #pragma omp parallel for firstprivate(ray) reduction(+ : histogram) schedule(static, 1)
             for (std::size_t pix = 0; pix < sphere.size; ++pix)
             {
-                auto palpha = sphere[pix];
+                auto [pr, ptheta, pphi] = sphere[pix];
 
-                if (ray.tracing(palpha[0], palpha[1], palpha[2]) == Ray::Disk)
+                if (ray.tracing(pr, ptheta, pphi) == Ray::Disk)
                 {
                     if constexpr (not switch_reflfrac_boost)
                     {

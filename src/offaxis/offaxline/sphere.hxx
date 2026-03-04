@@ -11,9 +11,10 @@ namespace offaxis
     public:
         Sphere(long nside);
 
-        auto operator[](std::size_t ipix) const
+        auto operator[](std::size_t index) const
         {
-            return (this->data.cbegin() + 3 * ipix);
+            auto i = this->data.cbegin() + 3 * index;
+            return std::tie(i[0], i[1], i[2]);
         }
 
         const std::size_t size;
